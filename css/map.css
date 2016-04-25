@@ -1,0 +1,44 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+#map {
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+}
+
+#bg {
+	height: 100%;
+	position: absolute;
+	width: 0px;
+	padding: 0px;
+	background: rgba(255, 255, 255, 0.6);
+}
+
+#container {
+	z-index: 2;
+	height: calc(100% - 134px);
+	max-height: calc(100% - 134px);
+	margin-top: 114px;
+	position: absolute;
+	width: 0px;
+	padding: 0px;
+	overflow: auto;
+}
+
+#logo {
+	z-index: 3;
+	position: absolute;
+	width: 507px;
+	height: 94px;
+	padding: 10px;
+}
+
+.site_content {
+	padding: 20px;
+}
