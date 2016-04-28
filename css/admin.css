@@ -1,0 +1,46 @@
+body {
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar td:hover {
+	color: steelblue;
+	font-style: bold;
+	cursor: pointer;
+}
+
+#navbar table {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+#navbar {
+	height: 100%;
+	width: 250px;
+	font-family: sans-serif;
+	padding: 15px;
+}
+
+#content {
+	position: absolute;
+	left: 280px;
+	top: 0px;
+	width: calc(100% - 280px);
+	height: 100%;
+	padding: 50px;
+}
+
+#popup {
+	position: fixed;
+	z-index: 1;
+	height: calc(100% - 100px);
+	width: 800px;
+	top: 50px;
+	left: 50%;
+	padding: 20px;
+	transform: translateX(-50%);
+	background-color: white;
+	overflow: auto;
+	box-shadow: 0px 0px 15px #888888;
+}

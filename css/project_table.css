@@ -1,0 +1,19 @@
+.projects table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.projects th, .projects td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.projects th {
+	background-color: #e6fff2;
+}
+
+
+.projects tr:hover{
+	background-color: #e6f2ff;
+}
