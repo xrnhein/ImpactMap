@@ -10,6 +10,7 @@ function initMap() {
 
 	map.setOptions({styles: [ { featureType: "road", stylers: [ { visibility: "off" } ] },{ } ]});
 
+	/*
 	var testMarker = new google.maps.Marker({
 		position: davis,
 		map: map,
@@ -33,4 +34,43 @@ function initMap() {
 			'padding-bottom': '0px'
 		}, 300);
 	});
+	*/
+
+	$.ajax({
+        type: "POST",
+        url: "/php/php/filter.php",
+        data: {},
+        data_type: "json",
+        success: function(data) {
+        	var projects = JSON.parse(data);
+        	projects.forEach(function(project) {
+        		var marker = new google.maps.Marker({
+					position: {lat: project.lat, lng: project.lng},
+					map: map,
+					title: project.title
+				});
+
+				marker.addListener('click', function() {
+					$("#container").animate({
+						'width': '507px',
+						'padding': '10px'
+					}, 300, function() {
+						$("#site_title").html("<center><h3>" + project.title + "</h3></center>");
+						$("#site_img").html('<center><img src="img/328.jpg" width="400px"></center>');
+						$("#site_description").html(project.description);
+					});
+
+					$("#bg").animate({
+						'width': '507px',
+						'padding': '10px',
+						'padding-top': '0px',
+						'padding-bottom': '0px'
+					}, 300);
+				});
+        	});
+        },
+        complete: function() {
+
+        }
+    });
 }
