@@ -31,17 +31,23 @@ class Map {
      * Must be set: POST, POST[address], POST[title], POST[description]
      * @return bool
      */
-    public function create_entry() {
+    public function add_project() {
         $address = trim($_POST['address']);
         $title = trim($_POST['title']);
         $description = trim($_POST['description']);
+        $lat = trim($_POST['lat']);
+        $lng = trim($_POST['lng']);
+        $category = trim($_POST['category']);
 
-        $sql = "INSERT INTO map(address, description, title) VALUES(:add, :desc, :title)";
+        $sql = "INSERT INTO Display(address, description, title, lat, lng, category) VALUES(:add, :desc, :title, :lat, :lng, :category)";
         try {
             $stmt = $this->_db->prepare($sql);
             $stmt -> bindParam(":add", $address, PDO::PARAM_STR);
             $stmt -> bindParam(":desc", $description, PDO::PARAM_STR);
             $stmt -> bindParam(":title", $title, PDO::PARAM_STR);
+            $stmt -> bindParam(":lat", $lat, PDO::PARAM_INT);
+            $stmt -> bindParam(":lng", $lng, PDO::PARAM_INT);
+            $stmt -> bindParam(":category", $category, PDO::PARAM_STR);
             $stmt -> execute();
             return TRUE;
         } catch(PDOException $e) {
@@ -49,6 +55,46 @@ class Map {
             return FALSE;
         }
     }
+
+public function load_projects($filters = array()) {
+    $defaults = array(
+        'limit' => 250,
+        'minLat' => -85,
+        'maxLat' => 85,
+        'minLng' => -180,
+        'maxLng' => 180,
+        'category' => '%'
+    );
+    $filters = array_merge($defaults, $filters);
+
+    $results = NULL;
+    $sql = "SELECT pid, lat, lng, title FROM Display WHERE lat >= :minLat AND lat <= :maxLat AND lng >= :minLng AND lng <= :maxLng
+            AND category LIKE :category
+            LIMIT :limit";
+    try {
+        $stmt = $this->_db->prepare($sql);
+        $stmt -> bindParam(':limit', $filters['limit'], PDO::PARAM_INT);
+        $stmt -> bindParam(':minLat', $filters['minLat'], PDO::PARAM_STR);
+        $stmt -> bindParam(':maxLat', $filters['maxLat'], PDO::PARAM_STR);
+        $stmt -> bindParam(':minLng', $filters['minLng'], PDO::PARAM_STR);
+        $stmt -> bindParam(':maxLng', $filters['maxLng'], PDO::PARAM_STR);
+        $stmt -> bindParam(':category', $filters['category'], PDO::PARAM_STR);
+        $stmt -> execute();
+
+        while ($row = $stmt -> fetch()) {
+            $results[] = array('pid' => (int) $row[0],
+                               'lat' => (float) $row[1],
+                               'lng' => (float) $row[2],
+                               'title' => utf8_encode($row[3])
+                              );
+        }
+    } catch(PDOException $e) {
+        echo $e -> getMessage();
+        return NULL;
+    }
+
+    return $results;
+}
 
     /**
      * Returns all entries in the database as a 2D associative array.
@@ -63,53 +109,33 @@ class Map {
      *
      * @return array          A list of entries with associative index being the column names
      */
-    public function filter($filters = array()) {
-        $defaults = array(
-            'limit' => 100,
-            'minLat' => -85,
-            'maxLat' => 85,
-            'minLng' => -180,
-            'maxLng' => 180,
-            'category' => '%'
-        );
-        $filters = array_merge($defaults, $filters);
-
-        $results = NULL;
-        $sql = "SELECT * FROM Display WHERE lat >= :minLat AND lat <= :maxLat AND lng >= :minLng AND lng <= :maxLng
-                AND category LIKE :category
-                LIMIT :limit";
+    public function load_project_details($pid) {
+        $sql = "SELECT * FROM Display WHERE pid = $pid
+                LIMIT 1";
         try {
             $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(':limit', $filters['limit'], PDO::PARAM_INT);
-            $stmt -> bindParam(':minLat', $filters['minLat'], PDO::PARAM_STR);
-            $stmt -> bindParam(':maxLat', $filters['maxLat'], PDO::PARAM_STR);
-            $stmt -> bindParam(':minLng', $filters['minLng'], PDO::PARAM_STR);
-            $stmt -> bindParam(':maxLng', $filters['maxLng'], PDO::PARAM_STR);
-            $stmt -> bindParam(':category', $filters['category'], PDO::PARAM_STR);
+            $stmt -> bindParam(':pid', $pid, PDO::PARAM_INT);
             $stmt -> execute();
 
-            while ($row = $stmt -> fetch()) {
-                $results[] = array('pid' => (int) $row[0],
-                                   'address' => utf8_encode($row[1]),
-                                   'description' => utf8_encode($row[2]),
-                                   'pic' => utf8_encode($row[3]),
-                                   'link' => utf8_encode($row[4]),
-                                   'lat' => (float) $row[5],
-                                   'lng' => (float) $row[6],
-                                   'anim' => utf8_encode($row[7]),
-                                   'title' => utf8_encode($row[8]),
-                                   'infoopen' => (int) $row[9],
-                                   'category' => utf8_encode($row[10]),
-                                   'approved' => (int) $row[11],
-                                   'retina' => (int) $row[12]
+            $row = $stmt -> fetch();
+            return array('pid' => (int) $row[0],
+                               'address' => utf8_encode($row[1]),
+                               'description' => utf8_encode($row[2]),
+                               'pic' => utf8_encode($row[3]),
+                               'link' => utf8_encode($row[4]),
+                               'lat' => (float) $row[5],
+                               'lng' => (float) $row[6],
+                               'anim' => utf8_encode($row[7]),
+                               'title' => utf8_encode($row[8]),
+                               'infoopen' => (int) $row[9],
+                               'category' => utf8_encode($row[10]),
+                               'approved' => (int) $row[11],
+                               'retina' => (int) $row[12]
                                   );
-            }
         } catch(PDOException $e) {
             echo $e -> getMessage();
             return NULL;
         }
-
-        return $results;
     }
 
     /**

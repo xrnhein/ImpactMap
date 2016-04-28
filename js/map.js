@@ -38,7 +38,7 @@ function initMap() {
 
 	$.ajax({
         type: "POST",
-        url: "/php/php/filter.php",
+        url: "php/load_projects.php",
         data: {},
         data_type: "json",
         success: function(data) {
@@ -51,21 +51,34 @@ function initMap() {
 				});
 
 				marker.addListener('click', function() {
-					$("#container").animate({
-						'width': '507px',
-						'padding': '10px'
-					}, 300, function() {
-						$("#site_title").html("<center><h3>" + project.title + "</h3></center>");
-						$("#site_img").html('<center><img src="img/328.jpg" width="400px"></center>');
-						$("#site_description").html(project.description);
-					});
+					$.ajax({
+				        type: "POST",
+				        url: "php/load_project_details.php",
+				        data: {pid: project.pid},
+				        data_type: "json",
+				        success: function(data) {
+				        	project = JSON.parse(data);
 
-					$("#bg").animate({
-						'width': '507px',
-						'padding': '10px',
-						'padding-top': '0px',
-						'padding-bottom': '0px'
-					}, 300);
+				        	$("#container").animate({
+								'width': '507px',
+								'padding': '10px'
+							}, 300, function() {
+								$("#site_title").html("<center><h3>" + project.title + "</h3></center>");
+								$("#site_description").html(project.description);
+							});
+
+							$("#bg").animate({
+								'width': '507px',
+								'padding': '10px',
+								'padding-top': '0px',
+								'padding-bottom': '0px'
+							}, 300);
+				        	
+				        },
+				        complete: function() {
+
+				        }
+				    });
 				});
         	});
         },

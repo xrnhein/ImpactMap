@@ -1,5 +1,5 @@
 CREATE TABLE Display (
-	pid INT NOT NULL,
+	pid INT NOT NULL AUTO_INCREMENT,
 	address VARCHAR(100),
 	description VARCHAR(1000),
 	pic VARCHAR(100),
