@@ -21,12 +21,9 @@
 
 					echo "<tr><td>Change password</td></tr>";
 					if ($usertype == "admin") {
-						echo "<tr><td>Authenticate a new user</td></tr>";
-						echo "<tr><td>Change user permissions</td></tr>";
+						echo "<tr><td>Edit users</td></tr>";
 					}
-					echo "<tr><td onclick='loadProjects()'>Update projects</td></tr>";
-					echo "<tr><td>Restore old project entries</td></tr>";
-					
+					echo "<tr><td onclick='loadProjects()'>Edit projects</td></tr>";
 				?>
 			</table>
 		</div>

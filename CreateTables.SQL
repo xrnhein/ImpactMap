@@ -33,3 +33,13 @@ CREATE TABLE History (
 	retina INT,
 	PRIMARY KEY(eid)
 );
+
+CREATE TABLE Users (
+	uid INT NOT NULL,
+	email VARCHAR(64),
+	add BOOLEAN,
+	edit BOOLEAN,
+	remove BOOLEAN,
+	centers MULTISET,
+	PRIAMRY KEY(uid)
+);

@@ -17,3 +17,7 @@
 .projects tr:hover{
 	background-color: #e6f2ff;
 }
+
+.clickable {
+	cursor: pointer;
+}

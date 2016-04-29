@@ -119,19 +119,19 @@ public function load_projects($filters = array()) {
 
             $row = $stmt -> fetch();
             return array('pid' => (int) $row[0],
-                               'address' => utf8_encode($row[1]),
-                               'description' => utf8_encode($row[2]),
-                               'pic' => utf8_encode($row[3]),
-                               'link' => utf8_encode($row[4]),
-                               'lat' => (float) $row[5],
-                               'lng' => (float) $row[6],
-                               'anim' => utf8_encode($row[7]),
-                               'title' => utf8_encode($row[8]),
-                               'infoopen' => (int) $row[9],
-                               'category' => utf8_encode($row[10]),
-                               'approved' => (int) $row[11],
-                               'retina' => (int) $row[12]
-                                  );
+                         'address' => utf8_encode($row[1]),
+                         'description' => utf8_encode($row[2]),
+                         'pic' => utf8_encode($row[3]),
+                         'link' => utf8_encode($row[4]),
+                         'lat' => (float) $row[5],
+                         'lng' => (float) $row[6],
+                         'anim' => utf8_encode($row[7]),
+                         'title' => utf8_encode($row[8]),
+                         'infoopen' => (int) $row[9],
+                         'category' => utf8_encode($row[10]),
+                         'approved' => (int) $row[11],
+                         'retina' => (int) $row[12]
+                        );
         } catch(PDOException $e) {
             echo $e -> getMessage();
             return NULL;
@@ -143,12 +143,12 @@ public function load_projects($filters = array()) {
      * @param $id int   The ID of the entry you want to remove
      * @return bool     TRUE if successfully removed, FALSE otherwise
      */
-    public function remove($id) {
-        $id = intval($id);
-        $sql = "DELETE FROM map WHERE id=:id LIMIT 1";
+    public function remove($pid) {
+        $pid = intval($pid);
+        $sql = "DELETE FROM Display WHERE pid=:pid LIMIT 1";
         try {
             $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(":id", $id, PDO::PARAM_INT);
+            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
             $stmt -> execute();
             return TRUE;
         } catch(PDOException $e) {
@@ -182,6 +182,7 @@ public function load_projects($filters = array()) {
      * @param array $values     An array of values to be changed for this entry. The indices are column names.
      * @return bool             TRUE on successful update, FALSE otherwise
      */
+    /*
     public function update_entry($id, $values = array()) {
         $id = intval($id);
         $defaults = $this -> get_info($id);
@@ -219,6 +220,42 @@ public function load_projects($filters = array()) {
             $stmt -> bindParam(":appr", $values['approved'], PDO::PARAM_INT);
             $stmt -> bindParam(":retina", $values['retina'], PDO::PARAM_INT);
             $stmt -> bindParam(":id", $id, PDO::PARAM_INT);
+            $stmt -> execute();
+            return TRUE;
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return FALSE;
+        }
+    }
+    */
+
+    public function update_entry() {
+        $pid = trim($_POST['pid']);
+        $address = trim($_POST['address']);
+        $title = trim($_POST['title']);
+        $description = trim($_POST['description']);
+        $lat = trim($_POST['lat']);
+        $lng = trim($_POST['lng']);
+        $category = trim($_POST['category']);
+
+        $sql = "UPDATE Display SET
+                  address = :addr,
+                  description = :descr,
+                  lat = :lat,
+                  lng = :lng,
+                  title = :title,
+                  category = :cat
+                WHERE pid = :pid LIMIT 1
+                ";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":addr", $address, PDO::PARAM_STR);
+            $stmt -> bindParam(":descr", $description, PDO::PARAM_STR);
+            $stmt -> bindParam(":lat", $lat, PDO::PARAM_STR);
+            $stmt -> bindParam(":lng", $lng, PDO::PARAM_STR);
+            $stmt -> bindParam(":title", $title, PDO::PARAM_STR);
+            $stmt -> bindParam(":cat", $category, PDO::PARAM_STR);
+            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
             $stmt -> execute();
             return TRUE;
         } catch(PDOException $e) {

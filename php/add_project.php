@@ -1,13 +1,32 @@
-<?php
+<div class="form-group">
+    <label for="title">Title: </label>
+    <input type="text" class="form-control" id="title" name="title">
+</div>
 
-require_once "common/dbConnect.php";
-require_once "common/class.map.php";
+<div class="form-group">
+    <label for="description">Description: </label>
+    <textarea class="form-control" id="description"  name="description"></textarea>
+</div>
 
-$map = new Map();
+<div class="form-group">
+    <label for="address">Address: </label>
+    <input type="text" class="form-control" id="address" name="address">
+</div>
 
-if (isset($_POST['address'], $_POST['description'], $_POST['title'], $_POST['lat'], $_POST['lng'], $_POST['category'])) {
-    if ($map -> add_project())
-        echo "Database updated.";
-}
+<div class="form-group">
+    <label for="lat">Latitude: </label>
+    <input type="text" class="form-control" id="lat" name="lat">
+</div>
 
-?>
+<div class="form-group">
+    <label for="lng">Longitude: </label>
+    <input type="text" class="form-control" id="lng" name="lng">
+</div>
+
+<div class="form-group">
+    <label for="category">Center: </label>
+    <input type="text" class="form-control" id="category" name="category">
+</div>
+
+<input type="submit" value="Submit" onclick="submitNewProject()"><br>
+<a href="#" onclick="closePopup()">Close</a>
