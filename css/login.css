@@ -1,0 +1,23 @@
+ body {
+     background-image: url("login.jpg");
+     background-size: cover;
+     font-family: Montserrat;
+}
+
+#logo {
+    z-index: 2;
+    position: absolute;
+    width: 507px;
+    height: 0px;
+    padding: 10px;
+}
+
+p {
+    text-align: center;
+    color: red;
+}
+
+
+
+
+
