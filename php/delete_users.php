@@ -4,9 +4,9 @@
 
     $map = new Map();
 
-	$projects = json_decode($_POST['data']);
+	$users = json_decode($_POST['data']);
 
-	foreach($projects as $project) {
-		$map->remove_project($project);
+	foreach($users as $uid) {
+		$map->remove_user($uid);
 	}
 ?>
