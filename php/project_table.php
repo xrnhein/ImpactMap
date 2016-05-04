@@ -30,5 +30,5 @@
 		}
 	?>
 </table>
-<a href="#" onclick="addProject()">Add a project</a><br>
+<a href="#" onclick="editProject(-1)">Add a project</a><br>
 <a href="#" onclick="deleteProjects()">Delete selected projects</a>
