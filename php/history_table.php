@@ -1,8 +1,8 @@
 <table class="projects">
-	<input type="submit" value="Import .csv"><input type="submit" value="Export .csv"><br><br>
-	Max projects shown <input type="text" value="100"><br>
-	View entries between <input type="text"> and <input type="text"><br>
-	Only show deleted projects <input type="checkbox"><br><br>
+	<?php
+		echo 'View table at: <input type="text" id="datetimepicker" value="' . $_POST['timestamp'] . '">';
+	?>
+	<input type='submit' value='Refresh' onclick='loadHistory()'><br>
 	<tr>
 		<th></th>
 		<th>timestamp</th>
@@ -21,6 +21,7 @@
 		$filters = array();
 
 		$filters['limit'] = $infinity;
+		$filters['timestamp'] = $_POST['timestamp'];
 
 		$filtered = $map -> load_history($filters);
 
@@ -37,6 +38,6 @@
 	?>
 </table>
 <a href="#" onclick="restoreHistory()">Restore selected projects</a><br>
-<a href="#" onclick="deleteHistory()">Delete forever</a><br><br>
-
-Restore project table to <input type="text">
+<?php
+	echo '<a href="#" onclick="restoreWholeTable(\'' . $_POST['timestamp'] . '\')">Restore whole table</a>';
+?>

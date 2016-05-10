@@ -1,4 +1,5 @@
 <table class="projects">
+	<input type="submit" value="Import .csv"><input type="submit" value="Export .csv"><br>
 	<tr>
 		<th></th>
 		<th>pid</th>

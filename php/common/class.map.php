@@ -137,27 +137,15 @@ class Map {
     }
 
     public function load_history($filters = array()) {
-      $defaults = array(
-          'limit' => 250,
-          'minLat' => -85,
-          'maxLat' => 85,
-          'minLng' => -180,
-          'maxLng' => 180,
-          'cid' => '0'
-      );
-      $filters = array_merge($defaults, $filters);
-
       $results = NULL;
-      $sql = "SELECT hid, time, lat, lng, title FROM History WHERE lat >= :minLat AND lat <= :maxLat AND lng >= :minLng AND lng <= :maxLng ORDER BY time DESC
+      $sql = "SELECT hid, time, lat, lng, title FROM History h1 WHERE h1.time =
+                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) 
+              ORDER BY h1.time DESC
               LIMIT :limit ";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> bindParam(':limit', $filters['limit'], PDO::PARAM_INT);
-          $stmt -> bindParam(':minLat', $filters['minLat'], PDO::PARAM_STR);
-          $stmt -> bindParam(':maxLat', $filters['maxLat'], PDO::PARAM_STR);
-          $stmt -> bindParam(':minLng', $filters['minLng'], PDO::PARAM_STR);
-          $stmt -> bindParam(':maxLng', $filters['maxLng'], PDO::PARAM_STR);
-          //$stmt -> bindParam(':cid', $filters['cid'], PDO::PARAM_INT);
+          $stmt -> bindParam(':ts', $filters['timestamp'], PDO::PARAM_STR);
           $stmt -> execute();
 
           while ($row = $stmt -> fetch()) {
@@ -174,6 +162,81 @@ class Map {
       }
 
       return $results;
+  }
+
+    public function load_history_details($hid) {
+        $hid = intval($hid);
+        $sql = "SELECT * FROM History WHERE hid=:hid LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":hid", $hid, PDO::PARAM_INT);
+            $stmt -> execute();
+            return $stmt -> fetch();
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return NULL;
+        }
+    }
+
+  public function restore_history($hid) {
+      $hid = intval($hid);
+      $exists = "SELECT pid FROM Projects WHERE pid = (SELECT pid FROM History WHERE hid=:hid LIMIT 1) LIMIT 1";
+      $insert = "INSERT INTO Projects
+                 SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, lat, lng 
+                 FROM History WHERE hid=:hid LIMIT 1";
+      $update = "UPDATE Projects p, History h
+                 SET p.cid = h.cid, p.title = h.title, p.status = h.status, p.startDate = h.startDate, p.endDate = h.endDate, p.buildingName = h.buildingName, p.address = h.address, p.zip = h.zip, p.type = h.type, p.summary = h.summary, p.link = h.link, p.pic = h.pic, p.contactName = h.contactName, p.contactEmail = h.contactEmail, p.contactPhone = h.contactPhone, p.lat = h.lat, p.lng = h.lng
+                 WHERE p.pid = h.pid AND h.hid = :hid";
+      try {
+          $stmt = $this->_db->prepare($exists);
+          $stmt -> bindParam(":hid", $hid, PDO::PARAM_INT);
+          $stmt -> execute();
+          if ($stmt->rowCount() == 0) {
+            $stmt = $this->_db->prepare($insert);
+            $stmt -> bindParam(":hid", $hid, PDO::PARAM_INT);
+            $stmt -> execute();
+          } else {
+            $stmt = $this->_db->prepare($update);
+            $stmt -> bindParam(":hid", $hid, PDO::PARAM_INT);
+            $stmt -> execute();
+          }
+          return TRUE;
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+          return FALSE;
+      }
+  }
+
+   public function restore_all_history($timestamp) {
+      echo $timestamp;
+      $sql = "DELETE FROM Projects;
+              INSERT INTO Projects
+              SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, lat, lng 
+              FROM History h1 WHERE h1.time =
+                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts)";
+      try {
+          $stmt = $this->_db->prepare($sql);
+          $stmt -> bindParam(":ts", $timestamp, PDO::PARAM_STR);
+          $stmt -> execute();
+          return TRUE;
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+          return FALSE;
+      }
+  }
+
+  public function remove_history($hid) {
+      $hid = intval($hid);
+      $sql = "DELETE FROM History WHERE hid=:hid LIMIT 1";
+      try {
+          $stmt = $this->_db->prepare($sql);
+          $stmt -> bindParam(":hid", $hid, PDO::PARAM_INT);
+          $stmt -> execute();
+          return TRUE;
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+          return FALSE;
+      }
   }
 
 
@@ -244,12 +307,16 @@ class Map {
 
   public function center_referred_to($cid) {
     $cid = intval($cid);
-    $sql = "SELECT pid FROM Projects WHERE cid=:cid LIMIT 1";
+    $sql1 = "SELECT pid FROM Projects WHERE cid=:cid LIMIT 1";
+    $sql2 = "SELECT pid FROM History WHERE cid=:cid LIMIT 1";
     try {
-        $stmt = $this->_db->prepare($sql);
-        $stmt -> bindParam(":cid", $cid, PDO::PARAM_INT);
-        $stmt -> execute();
-        if (count($stmt->fetchAll()) > 0)
+        $stmt1 = $this->_db->prepare($sql1);
+        $stmt1 -> bindParam(":cid", $cid, PDO::PARAM_INT);
+        $stmt1 -> execute();
+        $stmt2 = $this->_db->prepare($sql2);
+        $stmt2 -> bindParam(":cid", $cid, PDO::PARAM_INT);
+        $stmt2 -> execute();
+        if ($stmt1->rowCount() > 0 || $stmt2->rowCount() > 0)
           return TRUE;
         else
           return FALSE;

@@ -4,7 +4,7 @@ var marker;
 var position;
 var davis = {lat: 38.5449, lng: -121.7405};
 
-function initMap() {
+function initMap(draggable) {
     projectPickerMap = new google.maps.Map($("#projectPickerMap").get(0), {
         center: davis,
         zoom: 8,
@@ -19,7 +19,7 @@ function initMap() {
         marker = new google.maps.Marker({
             map: projectPickerMap,
             position: position,
-            draggable: true,
+            draggable: draggable,
             title: "Drag me!"
         });
     }
@@ -27,16 +27,22 @@ function initMap() {
 
 $(document).ready( function() {
 	$("#popup").hide();
+    $("#bg").hide();
+    $("#bg").click(closePopup);
 });
 
 function contentCallback(data) {
 	$("#content").html(data);
+}
 
+function historyContentCallback(data) {
+    $("#content").html(data);
+    $("#datetimepicker").datetimepicker({format: 'Y-m-d H:i'});
 }
 
 function projectPopupCallback(data) {
     $("#popup").html(data);
-    initMap();
+    initMap(true);
     $("#address").keyup(function() {
         geocoder.geocode({
             address: $("#address").val()
@@ -45,14 +51,15 @@ function projectPopupCallback(data) {
     $("#popup").scrollTop(0);
 }
 
-function centerPopupCallback(data) {
+function historyPopupCallback(data) {
     $("#popup").html(data);
+    initMap(false);
+    $("#popup").scrollTop(0);
 }
 
-function userPopupCallback(data) {
+function popupCallback(data) {
     $("#popup").html(data);
 }
-
 
 function geocodeCallback(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
@@ -134,11 +141,61 @@ function deleteProjects() {
     });
 }
 
-function loadUtilities() {
+function loadHistory() {
+    var ts = ($("#datetimepicker").val() != null) ? $("#datetimepicker").val() : formattedDateTime();
     $.ajax({
         type: "POST",
         url: "php/history_table.php",
-        success: contentCallback
+        data: {timestamp: ts},
+        success: historyContentCallback
+    });
+}
+
+function viewHistory(hid) {
+    openPopup();
+    $.ajax({
+        type: "POST",
+        data: {hid: hid},
+        data_type: "json",
+        url: "php/view_project_history.php",
+        success: historyPopupCallback
+    });
+}
+
+function restoreHistory() {
+    var projects = $('.delete:checkbox:checked').map(function () {
+        return this.id;
+    }).get();
+
+    $.ajax({
+        type: "POST",
+        url: "php/restore_history.php",
+        data: {data: JSON.stringify(projects)},
+        success: printCallback
+    });
+}
+
+function restoreWholeTable(timestamp) {
+    $.ajax({
+        type: "POST",
+        url: "php/restore_all_history.php",
+        data: {data: $("#datetimepicker").val()},
+        success: printCallback
+    });
+}
+
+function deleteHistory() {
+    var projects = $('.delete:checkbox:checked').map(function () {
+        return this.id;
+    }).get();
+
+    $.ajax({
+        type: "POST",
+        url: "php/delete_history.php",
+        data: {data: JSON.stringify(projects)}, 
+        success: function (data) {
+            loadHistory();
+        }
     });
 }
 
@@ -157,7 +214,7 @@ function editCenter(cid) {
         data: {cid: cid},
         data_type: "json",
         url: "php/edit_center.php",
-        success: centerPopupCallback
+        success: popupCallback
     });
 }
 
@@ -207,7 +264,7 @@ function editUser(uid) {
         data: {uid: uid},
         data_type: "json",
         url: "php/edit_user.php",
-        success: userPopupCallback
+        success: popupCallback
     });
 }
 
@@ -243,10 +300,12 @@ function deleteUsers() {
 
 function openPopup() {
     $("#popup").show();
+    $("#bg").show();
 }
 
 function closePopup() {
     $("#popup").hide();
+    $("#bg").hide();
     $("#popup").html("");
     marker = null;
     position = null;
@@ -262,4 +321,13 @@ function changePassword() {
 
 function printCallback(data) {
     console.log(data);
+}
+
+function formattedDateTime() {
+    var d = new Date();
+    return d.getFullYear() + "-" + timeStampValue((d.getMonth() + 1)) + "-" + timeStampValue(d.getDate()) + " " + timeStampValue(d.getHours()) + ":" + timeStampValue(d.getMinutes());
+}
+
+function timeStampValue(num) {
+   return (num < 10) ? "0" + num : num;
 }
