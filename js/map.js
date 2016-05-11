@@ -1,6 +1,8 @@
 var map;
 var davis = {lat: 38.5449, lng: -121.7405};
 
+var countries;
+
 function initMap() {
 	map = new google.maps.Map($("#map").get(0), {
 		center: davis,
@@ -86,4 +88,28 @@ function initMap() {
 
         }
     });
+
+	countries = new Bloodhound({
+	    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+	    queryTokenizer: Bloodhound.tokenizers.whitespace,
+	    prefetch: {
+	        url: 'search.json',
+	        filter: function (countries) {
+	            return $.map(countries, function (country) {
+	                return {
+	                    name: country
+	                };
+	            });
+	        }
+	    }
+	});
+
+	// Initialize the Bloodhound suggestion engine
+	countries.initialize();
+
+	// Instantiate the Typeahead UI
+	$('#searchbar').typeahead(null, {
+	    displayKey: 'name',
+	    source: countries.ttAdapter()
+	});
 }

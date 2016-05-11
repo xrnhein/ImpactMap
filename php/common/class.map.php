@@ -556,6 +556,26 @@ class Map {
     }
 
 
+    public function generate_prefetch() {
+      $sql = "SELECT title, buildingName, address, zip, contactName FROM Projects";
+      try {
+          $stmt = $this->_db->prepare($sql);
+          $stmt -> execute();
 
+          $file = fopen("search.json", "w");
+          fwrite($file, "[");
+          while ($row = $stmt->fetch()) {
+            foreach ($row as $col) {
+              fwrite($file, '"');
+              fwrite($file, $col);
+              fwrite($file, '",');
+            }
+          }
+          fwrite($file, '""]');
+          fclose($file);
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+      }
+    }
 
 }

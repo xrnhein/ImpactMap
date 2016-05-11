@@ -42,3 +42,15 @@ html, body {
 .site_content {
 	padding: 20px;
 }
+
+#search {
+	z-index: 3;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	width: 200px;
+}
+
+#searchbar {
+	width: 100%;
+}
