@@ -13,6 +13,8 @@
 		<link rel="stylesheet" href="datetimepicker/jquery.datetimepicker.min.css">
 		<script src="datetimepicker/jquery.datetimepicker.full.min.js"></script>
 
+		<script src="snowball_stemmer/stemmer/lib/Snowball.min.js"></script>
+
 		<link rel="stylesheet" href="css/admin.css">
 		<link rel="stylesheet" href="css/project_table.css">
 

@@ -17,13 +17,14 @@ CREATE TABLE Projects (
 	contactPhone VARCHAR(16),
 	fundedBy VARCHAR(100),
 	keywords VARCHAR(100),
+	stemmedSearchText TEXT,
 	lat REAL,
 	lng REAL,
-	FULLTEXT(title, buildingName, address, zip, keywords, contactName)
+	FULLTEXT(stemmedSearchText)
 ) ENGINE=MyISAM;
 
 CREATE TABLE History (
-	hid INT NOT NULL AUTO_INCREMENT,
+	hid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	time TIMESTAMP,
 	pid INT,
 	cid INT,
@@ -43,26 +44,24 @@ CREATE TABLE History (
 	contactPhone VARCHAR(16),
 	fundedBy VARCHAR(100),
 	keyWords VARCHAR(100),
+	stemmedSearchText TEXT,
 	deleted BOOLEAN,
 	lat REAL,
-	lng REAL,
-	PRIMARY KEY(hid)
+	lng REAL
 );
 
 CREATE TABLE Centers (
-	cid INT NOT NULL AUTO_INCREMENT,
+	cid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(100),
 	acronym VARCHAR(8),
-	color CHAR(7),
-	PRIMARY KEY(cid)
+	color CHAR(7)
 );
 
 CREATE TABLE Users (
-	uid INT NOT NULL AUTO_INCREMENT,
+	uid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	email VARCHAR(64),
 	password VARCHAR(64),
 	root BOOLEAN,
 	admin BOOLEAN,
-	cas BOOLEAN,
-	PRIMARY KEY(uid)
+	cas BOOLEAN
 );

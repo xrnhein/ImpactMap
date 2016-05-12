@@ -97,6 +97,13 @@ function editProject(pid) {
 }
 
 function submitEditProject(pid) {
+    var stemmer = new Snowball("english");
+    var searchWords = ($("#title").val() + " " +  $("#buildingName").val() + " " + $("#address").val() + " " + $("#zip").val() + " " + $("#contactName").val()).split(" ");
+    searchWords.forEach(function (word, i, words) {
+        stemmer.setCurrent(word);
+        stemmer.stem();
+        words[i] = stemmer.getCurrent();
+    });
     $.ajax({
         type: "POST",
         url: "php/submit_project_edit.php",
@@ -116,6 +123,7 @@ function submitEditProject(pid) {
                contactName: $("#contactName").val(),
                contactEmail: $("#contactEmail").val(),
                contactPhone: $("#contactPhone").val(),
+               stemmedSearchText: searchWords.join(" "),
                lat: marker.getPosition().lat(),
                lng: marker.getPosition().lng()},
         data_type: "json",

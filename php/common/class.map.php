@@ -71,10 +71,10 @@ class Map {
      * @return bool
      */
     public function add_project() {
-        $sql = "INSERT INTO Projects(cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, lat, lng) 
-                VALUES (:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :lat, :lng);
-                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, lat, lng) 
-                VALUES ((SELECT MAX(pid) FROM Projects),:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :lat, :lng)";
+        $sql = "INSERT INTO Projects(cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, stemmedSearchText, lat, lng) 
+                VALUES (:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :stemmedSearchText, :lat, :lng);
+                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, stemmedSearchText, lat, lng) 
+                VALUES ((SELECT MAX(pid) FROM Projects),:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :stemmedSearchText, :lat, :lng)";
         try {
             $stmt = $this->_db->prepare($sql);
             $stmt -> bindParam(":cid",          $_POST['cid'], PDO::PARAM_INT);
@@ -92,6 +92,7 @@ class Map {
             $stmt -> bindParam(":contactName",  $_POST['contactName'], PDO::PARAM_STR);
             $stmt -> bindParam(":contactEmail", $_POST['contactEmail'], PDO::PARAM_STR);
             $stmt -> bindParam(":contactPhone", $_POST['contactPhone'], PDO::PARAM_STR);
+            $stmt -> bindParam(":stemmedSearchText", $_POST['stemmedSearchText'], PDO::PARAM_STR);
             $stmt -> bindParam(":lat",          $_POST['lat'], PDO::PARAM_STR);
             $stmt -> bindParam(":lng",          $_POST['lng'], PDO::PARAM_STR);
             $stmt -> execute();
@@ -104,9 +105,9 @@ class Map {
 
     public function update_project() {
         $sql = "UPDATE Projects SET cid = :cid, title = :title, status = :status, startDate = :startDate, endDate = :endDate, buildingName = :buildingName, address = :address, zip = :zip, type = :type, summary = :summary, 
-                                    link = :link, pic = :pic, contactName = :contactName, contactEmail = :contactEmail, contactPhone = :contactPhone, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
-                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, lat, lng) 
-                VALUES (:pid, :cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :lat, :lng)";
+                                    link = :link, pic = :pic, contactName = :contactName, contactEmail = :contactEmail, contactPhone = :contactPhone, stemmedSearchText = :stemmedSearchText, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
+                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, stemmedSearchText, lat, lng) 
+                VALUES (:pid, :cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :stemmedSearchText, :lat, :lng)";
 
         try {
             $stmt = $this->_db->prepare($sql);
@@ -126,6 +127,7 @@ class Map {
             $stmt -> bindParam(":contactName",  $_POST['contactName'], PDO::PARAM_STR);
             $stmt -> bindParam(":contactEmail", $_POST['contactEmail'], PDO::PARAM_STR);
             $stmt -> bindParam(":contactPhone", $_POST['contactPhone'], PDO::PARAM_STR);
+            $stmt -> bindParam(":stemmedSearchText", $_POST['stemmedSearchText'], PDO::PARAM_STR);
             $stmt -> bindParam(":lat",          $_POST['lat'], PDO::PARAM_STR);
             $stmt -> bindParam(":lng",          $_POST['lng'], PDO::PARAM_STR);
             $stmt -> execute();
@@ -527,8 +529,18 @@ class Map {
     /**
      * Center
      */
-    public function search($id) {
+    public function search($searchPhrase) {
+        $sql = "SELECT title FROM Projects WHERE MATCH (stemmedSearchText) AGAINST (:searchPhrase IN BOOLEAN MODE) LIMIT 10";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":searchPhrase", $searchPhrase, PDO::PARAM_STR);
+            $stmt -> execute();
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            echo $e -> getMessage();
+        }
 
+        return NULL;
     }
 
     /**
@@ -562,7 +574,7 @@ class Map {
           $stmt = $this->_db->prepare($sql);
           $stmt -> execute();
 
-          $file = fopen("search.json", "w");
+          $file = fopen("/search.json", "w");
           fwrite($file, "[");
           while ($row = $stmt->fetch()) {
             foreach ($row as $col) {

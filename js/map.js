@@ -1,7 +1,7 @@
 var map;
 var davis = {lat: 38.5449, lng: -121.7405};
 
-var countries;
+var projects;
 
 function initMap() {
 	map = new google.maps.Map($("#map").get(0), {
@@ -88,28 +88,54 @@ function initMap() {
 
         }
     });
+}
 
-	countries = new Bloodhound({
+$(document).ready(function () {
+	projects = new Bloodhound({
 	    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
 	    queryTokenizer: Bloodhound.tokenizers.whitespace,
 	    prefetch: {
-	        url: 'search.json',
-	        filter: function (countries) {
-	            return $.map(countries, function (country) {
+	        url: '/search.json',
+	        filter: function (projects) {
+	            return $.map(projects, function (project) {
 	                return {
-	                    name: country
+	                    name: project
 	                };
 	            });
 	        }
 	    }
 	});
 
+	projects.clearPrefetchCache();
+
 	// Initialize the Bloodhound suggestion engine
-	countries.initialize();
+	projects.initialize();
 
 	// Instantiate the Typeahead UI
 	$('#searchbar').typeahead(null, {
 	    displayKey: 'name',
-	    source: countries.ttAdapter()
+	    source: projects.ttAdapter()
 	});
-}
+
+	$('#searchbar').keypress(function (event) {
+		if (event.which == 13) {
+		    var stemmer = new Snowball("english");
+		    var searchWords = $("#searchbar").val().split(" ");
+		    searchWords.forEach(function (word, i, words) {
+		        stemmer.setCurrent(word);
+		        stemmer.stem();
+		        words[i] = stemmer.getCurrent();
+		    });
+		    console.log(searchWords.join(" "));
+			$.ajax({
+		        type: "POST",
+		        url: "php/search.php",
+		        data: {stemmedSearchText: searchWords.join(" ")},
+		        data_type: "json",
+		        success: function(data) {
+		        	console.log(data);
+		        }
+		    });
+		}
+	});
+});
