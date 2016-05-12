@@ -80,7 +80,7 @@ function geocodeCallback(results, status) {
 function loadProjects() {
     $.ajax({
         type: "POST",
-        url: "php/project_table.php",
+        url: "php/admin/projects/project_table.php",
         success: contentCallback
     });
 }
@@ -91,7 +91,7 @@ function editProject(pid) {
         type: "POST",
         data: {pid: pid},
         data_type: "json",
-        url: "php/edit_project.php",
+        url: "php/admin/projects/edit_project.php",
         success: projectPopupCallback
     });
 }
@@ -106,7 +106,7 @@ function submitEditProject(pid) {
     });
     $.ajax({
         type: "POST",
-        url: "php/submit_project_edit.php",
+        url: "php/admin/projects/submit_project_edit.php",
         data: {pid: pid,
                cid: $("#cid").val(),
                title: $("#title").val(),
@@ -141,7 +141,7 @@ function deleteProjects() {
 
     $.ajax({
         type: "POST",
-        url: "php/delete_projects.php",
+        url: "php/admin/projects/delete_projects.php",
         data: {data: JSON.stringify(projects)}, 
         success: function (data) {
             loadProjects();
@@ -153,7 +153,7 @@ function loadHistory() {
     var ts = ($("#datetimepicker").val() != null) ? $("#datetimepicker").val() : formattedDateTime();
     $.ajax({
         type: "POST",
-        url: "php/history_table.php",
+        url: "php/admin/history/history_table.php",
         data: {timestamp: ts},
         success: historyContentCallback
     });
@@ -165,7 +165,7 @@ function viewHistory(hid) {
         type: "POST",
         data: {hid: hid},
         data_type: "json",
-        url: "php/view_project_history.php",
+        url: "php/admin/history/view_project_history.php",
         success: historyPopupCallback
     });
 }
@@ -177,7 +177,7 @@ function restoreHistory() {
 
     $.ajax({
         type: "POST",
-        url: "php/restore_history.php",
+        url: "php/admin/history/restore_history.php",
         data: {data: JSON.stringify(projects)},
         success: printCallback
     });
@@ -186,7 +186,7 @@ function restoreHistory() {
 function restoreWholeTable(timestamp) {
     $.ajax({
         type: "POST",
-        url: "php/restore_all_history.php",
+        url: "php/admin/history/restore_all_history.php",
         data: {data: $("#datetimepicker").val()},
         success: printCallback
     });
@@ -199,7 +199,7 @@ function deleteHistory() {
 
     $.ajax({
         type: "POST",
-        url: "php/delete_history.php",
+        url: "php/admin/history/delete_history.php",
         data: {data: JSON.stringify(projects)}, 
         success: function (data) {
             loadHistory();
@@ -210,7 +210,7 @@ function deleteHistory() {
 function loadCenters() {
     $.ajax({
         type: "POST",
-        url: "php/center_table.php",
+        url: "php/admin/centers/center_table.php",
         success: contentCallback
     });
 }
@@ -221,7 +221,7 @@ function editCenter(cid) {
         type: "POST",
         data: {cid: cid},
         data_type: "json",
-        url: "php/edit_center.php",
+        url: "php/admin/centers/edit_center.php",
         success: popupCallback
     });
 }
@@ -229,7 +229,7 @@ function editCenter(cid) {
 function submitEditCenter(cid) {
     $.ajax({
         type: "POST",
-        url: "php/submit_center_edit.php",
+        url: "php/admin/centers/submit_center_edit.php",
         data: {cid: cid,
                name: $("#name").val(),
                acronym: $("#acronym").val(),
@@ -249,7 +249,7 @@ function deleteCenters() {
 
     $.ajax({
         type: "POST",
-        url: "php/delete_centers.php",
+        url: "php/admin/centers/delete_centers.php",
         data: {data: JSON.stringify(centers)}, 
         success: function (data) {
             loadCenters();
@@ -260,7 +260,7 @@ function deleteCenters() {
 function loadUsers() {
     $.ajax({
         type: "POST",
-        url: "php/user_table.php",
+        url: "php/admin/users/user_table.php",
         success: contentCallback
     });
 }
@@ -271,7 +271,7 @@ function editUser(uid) {
         type: "POST",
         data: {uid: uid},
         data_type: "json",
-        url: "php/edit_user.php",
+        url: "php/admin/users/edit_user.php",
         success: popupCallback
     });
 }
@@ -279,7 +279,7 @@ function editUser(uid) {
 function submitEditUser(uid) {
     $.ajax({
         type: "POST",
-        url: "php/submit_user_edit.php",
+        url: "php/admin/users/submit_user_edit.php",
         data: {uid: uid,
                admin: ($("#admin").is(":checked")) ? 1 : 0,
                cas: ($("#cas").is(":checked")) ? 1 : 0},
@@ -298,7 +298,7 @@ function deleteUsers() {
 
     $.ajax({
         type: "POST",
-        url: "php/delete_users.php",
+        url: "php/admin/users/delete_users.php",
         data: {data: JSON.stringify(users)}, 
         success: function (data) {
             loadUsers();
@@ -322,7 +322,7 @@ function closePopup() {
 function changePassword() {
     $.ajax({
         type: "POST",
-        url: "php/change_password.php",
+        url: "php/admin/change_password.php",
         success: contentCallback
     });
 }

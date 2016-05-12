@@ -10,10 +10,10 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxTuWupJtBOt5q0Cw-Iao0FDZgciKI0MI" async defer></script>
 
-		<link rel="stylesheet" href="datetimepicker/jquery.datetimepicker.min.css">
-		<script src="datetimepicker/jquery.datetimepicker.full.min.js"></script>
+		<link rel="stylesheet" href="lib/datetimepicker/jquery.datetimepicker.min.css">
+		<script src="lib/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 
-		<script src="snowball_stemmer/stemmer/lib/Snowball.min.js"></script>
+		<script src="lib/snowball_stemmer/Snowball.min.js"></script>
 
 		<link rel="stylesheet" href="css/admin.css">
 		<link rel="stylesheet" href="css/project_table.css">

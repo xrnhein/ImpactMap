@@ -40,7 +40,7 @@ function initMap() {
 
 	$.ajax({
         type: "POST",
-        url: "php/load_projects.php",
+        url: "php/admin/projects/load_projects.php",
         data: {},
         data_type: "json",
         success: function(data) {
@@ -55,7 +55,7 @@ function initMap() {
 				marker.addListener('click', function() {
 					$.ajax({
 				        type: "POST",
-				        url: "php/load_project_details.php",
+				        url: "php/admin/projects/load_project_details.php",
 				        data: {pid: project.pid},
 				        data_type: "json",
 				        success: function(data) {
@@ -95,7 +95,7 @@ $(document).ready(function () {
 	    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
 	    queryTokenizer: Bloodhound.tokenizers.whitespace,
 	    prefetch: {
-	        url: '/search.json',
+	        url: 'json/search.json',
 	        filter: function (projects) {
 	            return $.map(projects, function (project) {
 	                return {
@@ -129,7 +129,7 @@ $(document).ready(function () {
 		    console.log(searchWords.join(" "));
 			$.ajax({
 		        type: "POST",
-		        url: "php/search.php",
+		        url: "php/map/search.php",
 		        data: {stemmedSearchText: searchWords.join(" ")},
 		        data_type: "json",
 		        success: function(data) {

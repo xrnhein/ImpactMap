@@ -18,6 +18,7 @@ CREATE TABLE Projects (
 	fundedBy VARCHAR(100),
 	keywords VARCHAR(100),
 	stemmedSearchText TEXT,
+	visible BOOLEAN,
 	lat REAL,
 	lng REAL,
 	FULLTEXT(stemmedSearchText)
@@ -45,6 +46,7 @@ CREATE TABLE History (
 	fundedBy VARCHAR(100),
 	keyWords VARCHAR(100),
 	stemmedSearchText TEXT,
+	visible BOOLEAN,
 	deleted BOOLEAN,
 	lat REAL,
 	lng REAL
