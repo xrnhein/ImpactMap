@@ -471,60 +471,6 @@ class Map {
         }
     }
 
-    /**
-     * Updates a specific project entry in the database.
-     * @param int $id           The project ID
-     * @param array $values     An array of values to be changed for this entry. The indices are column names.
-     * @return bool             TRUE on successful update, FALSE otherwise
-     */
-    /*
-    public function update_entry($id, $values = array()) {
-        $id = intval($id);
-        $defaults = $this -> get_info($id);
-        $values = array_merge($values, $defaults);
-
-        $sql = "UPDATE map SET
-                  address = :addr,
-                  description = :descr,
-                  pic = :pic,
-                  link = :link,
-                  icon = :icon,
-                  lat = :lat,
-                  lng = :lng,
-                  anim = :anim,
-                  title = :title,
-                  infoopen = :infoopen,
-                  category = :cat,
-                  approved = :appr,
-                  retina = :retina
-                WHERE id = :id LIMIT 1
-                ";
-        try {
-            $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(":addr", $values['address'], PDO::PARAM_STR);
-            $stmt -> bindParam(":descr", $values['description'], PDO::PARAM_STR);
-            $stmt -> bindParam(":pic", $values['pic'], PDO::PARAM_STR);
-            $stmt -> bindParam(":link", $values['link'], PDO::PARAM_STR);
-            $stmt -> bindParam(":icon", $values['icon'], PDO::PARAM_STR);
-            $stmt -> bindParam(":lat", $values['lat'], PDO::PARAM_STR);
-            $stmt -> bindParam(":lng", $values['lng'], PDO::PARAM_STR);
-            $stmt -> bindParam(":anim", $values['anim'], PDO::PARAM_STR);
-            $stmt -> bindParam(":title", $values['title'], PDO::PARAM_STR);
-            $stmt -> bindParam(":infoopen", $values['infoopen'], PDO::PARAM_INT);
-            $stmt -> bindParam(":cat", $values['category'], PDO::PARAM_STR);
-            $stmt -> bindParam(":appr", $values['approved'], PDO::PARAM_INT);
-            $stmt -> bindParam(":retina", $values['retina'], PDO::PARAM_INT);
-            $stmt -> bindParam(":id", $id, PDO::PARAM_INT);
-            $stmt -> execute();
-            return TRUE;
-        } catch(PDOException $e) {
-            echo $e -> getMessage();
-            return FALSE;
-        }
-    }
-    */
-
-
 
     /**
      * Center
@@ -543,38 +489,13 @@ class Map {
         return NULL;
     }
 
-    /**
-     * Search keyword from title, category, description
-     */
-    public function search_suggest($keyword) {
-        $keyword = preg_replace("/[^A-Za-z0-9]/", " ", $keyword);
-        $search_string = '%'.$keyword.'%';
-
-        if (strlen($keyword < 3 || $keyword === ' '))
-            return NULL;
-
-        $sql = "SELECT * FROM map WHERE title LIKE :keyword || description LIKE :keyword || category LIKE :keyword";
-        try {
-            $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(":keyword", $search_string, PDO::PARAM_STR);
-            $stmt -> execute();
-            while ($row = $stmt -> fetch())
-                $results[] = $row;
-        } catch (PDOException $e) {
-            echo $e -> getMessage();
-        }
-
-        return empty($results) ? NULL : $results;
-    }
-
-
     public function generate_prefetch() {
       $sql = "SELECT title, buildingName, address, zip, contactName FROM Projects";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> execute();
 
-          $file = fopen("/search.json", "w");
+          $file = fopen("../../json/search.json", "w");
           fwrite($file, "[");
           while ($row = $stmt->fetch()) {
             foreach ($row as $col) {

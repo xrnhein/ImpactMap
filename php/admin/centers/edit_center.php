@@ -1,4 +1,8 @@
 <?php
+    /**
+    * Populates a popup dialog with information about the chosen center
+    */
+
     require_once "../../common/dbConnect.php";
     require_once "../../common/class.map.php";
 

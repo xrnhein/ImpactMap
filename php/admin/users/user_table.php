@@ -7,6 +7,12 @@
 		<th>cas</th>
 	</tr>
 	<?php
+		/**
+		* The table of users. Clicking on a user in the table will call editUser(uid) where uid is the id of that user in the table.
+		* Checkboxes store uids as well for deletion. Clicking on add user will call the same editUser(uid) function except with a
+		* uid of -1.
+		*/
+
 		require_once "../../common/dbConnect.php";
 		require_once "../../common/class.map.php";
 

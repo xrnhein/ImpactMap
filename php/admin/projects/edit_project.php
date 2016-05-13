@@ -1,4 +1,10 @@
 <?php
+    /**
+    * The edit project dialog. Everything is contained in the #popup div. It contains text fields and drop downs to specify all the data attributes for a project.
+    * The project id of the project being edited is passed over as $_POST['pid']. If the pid is -1 that indicates that a projected is being added rather than edited.
+    * The position variable in admin.js is set here, so that the map in the dialog will show the position of the chosen project.
+    */
+
     require_once "../../common/dbConnect.php";
     require_once "../../common/class.map.php";
 
@@ -11,6 +17,7 @@
 
     echo '<label>Title: </label><input type="text" class="form-control" id="title" name="title" value="' . utf8_encode($filtered['title']) . '">';
     echo '<label>Center: </label><select type="text" class="form-control" id="cid" name="cid">';
+    // Populate the list of centers
     $centers = $map->load_centers();
     for ($i = 0; $i < count($centers); $i++) {
         echo "<option value='" . $centers[$i]['cid'] ."'";
@@ -34,9 +41,11 @@
     echo '<label>Contact Email: </label><input type="text" class="form-control" id="contactEmail" name="contactEmail" value="' . $filtered['contactEmail'] . '">';
     echo '<label>Contact Phone: </label><input type="text" class="form-control" id="contactPhone" name="contactPhone" value="' . $filtered['contactPhone'] . '">';
 
+    // If we're editing a project then set the position variable for javascript to display the position on the map
     if ($pid != -1)
         echo '<script>position = new google.maps.LatLng(' . $filtered['lat'] . ', ' . $filtered['lng'] . ')</script>';
 
+    // When the user clicks submit call submitEditProject(pid) where pid is the id of the project being edited
     echo '<br><center><input type="submit" value="Submit" onclick="submitEditProject(' . $pid . ')"></center><br>';
 ?>
 

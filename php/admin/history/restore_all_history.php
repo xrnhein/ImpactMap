@@ -1,4 +1,8 @@
 <?php
+	/**
+	* Called when the root user wants to restore the entire project table to a given point in time.
+	*/
+
 	require_once "../../common/dbConnect.php";
     require_once "../../common/class.map.php";
 

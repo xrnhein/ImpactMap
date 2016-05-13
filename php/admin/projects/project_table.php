@@ -8,6 +8,11 @@
 		<th>lng</th>
 	</tr>
 	<?php
+		/**
+		* The table of projects. Each checkbox stores the id of the project it's next to for deletion. Clicking on a project calls editProject(pid) where
+		* pid is the id of that project.
+		*/
+
 		require_once "../../common/dbConnect.php";
 		require_once "../../common/class.map.php";
 

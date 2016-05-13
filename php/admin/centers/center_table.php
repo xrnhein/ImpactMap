@@ -7,6 +7,11 @@
 		<th>color</th>
 	</tr>
 	<?php
+
+		/** 
+		* The table is populated with centers from the Center database. Clicking a center calls editCenter(cid) with the center's id. Checkboxes also store center ids for deletion.
+		*/
+
 		require_once "../../common/dbConnect.php";
 		require_once "../../common/class.map.php";
 

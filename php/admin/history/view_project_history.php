@@ -1,4 +1,9 @@
 <?php
+    /**
+    * The contents of the popup dialog for viewing a project in the History table. Nothing can be edited from here, only viewed.
+    * The attributes of the project are loaded from the database and then displayed in the same format as the add/edit project dialog.
+    */
+
     require_once "../../common/dbConnect.php";
     require_once "../../common/class.map.php";
 
@@ -28,6 +33,7 @@
     echo '<label>Contact Email: </label><input type="text" class="form-control" id="contactEmail" name="contactEmail" value="' . $filtered['contactEmail'] . '" disabled="disabled">';
     echo '<label>Contact Phone: </label><input type="text" class="form-control" id="contactPhone" name="contactPhone" value="' . $filtered['contactPhone'] . '" disabled="disabled">';
 
+    // Set the position of the marker on the map
     if ($hid != -1)
         echo '<script>position = new google.maps.LatLng(' . $filtered['lat'] . ', ' . $filtered['lng'] . ')</script>';
 ?>

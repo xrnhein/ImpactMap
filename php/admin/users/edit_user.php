@@ -1,4 +1,9 @@
 <?php
+    /** 
+    * Called when the root admin wants to edit the properties of a user. The id of the user to edit is sent over via POST.
+    * If uid == -1 that indicates that a new user is being added to the system.
+    */
+
     require_once "../../common/dbConnect.php";
     require_once "../../common/class.map.php";
 
@@ -22,7 +27,6 @@
 
     echo '<br><center><input type="submit" value="Submit" onclick="submitEditUser(' . $uid . ')"></center><br>';
 ?>
-
 
 <br>
 <center><a href="#" onclick="closePopup()">Close</a></center>

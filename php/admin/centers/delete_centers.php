@@ -1,4 +1,8 @@
 <?php
+	/**
+	* Called with an array of center IDs, each center is then deleted from the center table
+	*/
+
 	require_once "../../common/dbConnect.php";
     require_once "../../common/class.map.php";
 

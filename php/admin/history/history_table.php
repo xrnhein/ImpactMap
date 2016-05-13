@@ -12,6 +12,13 @@
 		<th>lng</th>
 	</tr>
 	<?php
+		/**
+		* A table populated with entries in the History table that represent the Project table at a certain point in time. The time
+		* the table will represent is $_POST['timestamp']. Each checbox stores the id of a history entry to facilitate recovering 
+		* entries in the history. Clicking on an item in the history table calls viewHistory(hid) where hid is the id of that item
+		* in the history table.
+		*/
+
 		require_once "../../common/dbConnect.php";
 		require_once "../../common/class.map.php";
 

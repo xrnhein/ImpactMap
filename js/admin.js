@@ -1,8 +1,31 @@
+/*
+    This file allows admins to interact with the system to add or edit projects,
+    centers, project managers, or other users of the system (Only the root user
+    can do this).
+
+    It utlizies JQuery to make AJAX requests for PHP files from the server to
+    update the information displayed on the page. These functions are called
+    by the other PHP files that make up the admin pages.
+*/
+
+// Holds a reference to a google map to specifying the exact location of a project site when adding or editing a project
 var projectPickerMap;
+// Holds a google maps geocoder object to convert addresses into coordinates, used when a user adds or edits a project
 var geocoder;
+// Holds a reference to a google maps marker for the position of an individual project when adding or editting a project
 var marker;
+// This position is what the above marker will be set to when editing a project. The value is fetched from the server since a project being edited will already have a location.
 var position;
+
 var davis = {lat: 38.5449, lng: -121.7405};
+
+/**
+* Called when opening the add/edit project or view history dialog to show a small map that will show the location of a project.
+*
+* @param draggable A boolean value to specifiy whether or not the marker on the map will be draggable. Will be 'true' for add/edit of a project
+*                  or 'false' when viewing history. This way you can specifiy a project's exact location by dragging the marker but you can't
+*                  alter the history of a project.
+*/
 
 function initMap(draggable) {
     projectPickerMap = new google.maps.Map($("#projectPickerMap").get(0), {
@@ -25,21 +48,39 @@ function initMap(draggable) {
     }
 }
 
+/**
+* Called when the web page is loaded. Currently it initializes the dialog windows.
+*/
 $(document).ready( function() {
 	$("#popup").hide();
     $("#bg").hide();
     $("#bg").click(closePopup);
 });
 
+/**
+* When a new admin page is loaded it fills the content area, this is the callback that handles that. The requests for new pages are sent in other functions using ajax.
+*
+* @param data The html content returned from the server
+*/
 function contentCallback(data) {
 	$("#content").html(data);
 }
 
+/**
+* A callback to deal specifically with the history table
+*
+* @param data The html content returned from the server
+*/
 function historyContentCallback(data) {
     $("#content").html(data);
     $("#datetimepicker").datetimepicker({format: 'Y-m-d H:i'});
 }
 
+/** 
+* Called when the dialog for adding/editing projects has been retrieved from the server and is ready to be shown
+*
+* @param data The html content returned from the server
+*/
 function projectPopupCallback(data) {
     $("#popup").html(data);
     initMap(true);
@@ -51,16 +92,34 @@ function projectPopupCallback(data) {
     $("#popup").scrollTop(0);
 }
 
+/**
+* Called when the view history dialog is ready to be shown
+*
+* @param data The html content returned from the server
+*/
 function historyPopupCallback(data) {
     $("#popup").html(data);
     initMap(false);
     $("#popup").scrollTop(0);
 }
 
+/**
+* Called when any other content is ready to be shown in a popup dialog
+*
+* @param data The html content returned from the server
+*/
 function popupCallback(data) {
     $("#popup").html(data);
 }
 
+/**
+* Called when the google maps API has retrieved GPS coordinates for a given address and the map is ready to be updated
+*
+* For more information on google maps geocoding see https://developers.google.com/maps/documentation/javascript/geocoding#Geocoding
+*
+* @param results An array of matches for the address.
+* @param status Status code of the geocoding request.
+*/
 function geocodeCallback(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
         projectPickerMap.setCenter(results[0].geometry.location);
@@ -77,6 +136,9 @@ function geocodeCallback(results, status) {
     }
 }
 
+/**
+* Called by admin.php when the user wants to view the table of projects
+*/
 function loadProjects() {
     $.ajax({
         type: "POST",
@@ -85,6 +147,11 @@ function loadProjects() {
     });
 }
 
+/**
+* Called by project_table.php when the user clicks on a project to edit it or when they click add project
+*
+* @param pid The id of the project to be edited. -1 if adding a project.
+*/
 function editProject(pid) {
     openPopup();
     $.ajax({
@@ -96,7 +163,13 @@ function editProject(pid) {
     });
 }
 
+/**
+* Called when a user is done making changes to a project and wishes to submit it. All the data is captured from the form and sent to submit_project_edit.php
+*
+* @param pid The id of the project being submitted
+*/
 function submitEditProject(pid) {
+    // When a user submits a project certain fields are combined and then "stemmed", meaning the words are reduced to their roots (i.e. running -> run), and these are then stored as stemmedSearchText to be searched later
     var stemmer = new Snowball("english");
     var searchWords = ($("#title").val() + " " +  $("#buildingName").val() + " " + $("#address").val() + " " + $("#zip").val() + " " + $("#contactName").val()).split(" ");
     searchWords.forEach(function (word, i, words) {
@@ -104,6 +177,8 @@ function submitEditProject(pid) {
         stemmer.stem();
         words[i] = stemmer.getCurrent();
     });
+
+    // Ajax request to submit the data to the server
     $.ajax({
         type: "POST",
         url: "php/admin/projects/submit_project_edit.php",
@@ -134,6 +209,9 @@ function submitEditProject(pid) {
     closePopup();
 }
 
+/**
+* Called by project_table.php when the user wishes to delete projects from the table. Jquery is used to get the project ids of all checked checkboxes, these ids are then sent to delete_projects.php for deletion
+*/
 function deleteProjects() {
     var projects = $('.delete:checkbox:checked').map(function () {
         return this.id;
@@ -149,6 +227,9 @@ function deleteProjects() {
     });
 }
 
+/**
+* Called by admin.php to load history_table.php. A datetimepicker is created and its value is initialized to the current date and time
+*/
 function loadHistory() {
     var ts = ($("#datetimepicker").val() != null) ? $("#datetimepicker").val() : formattedDateTime();
     $.ajax({
@@ -159,6 +240,11 @@ function loadHistory() {
     });
 }
 
+/**
+* Called when a user clicks on a history entry in history_table.php, this will open a popup dialog showing the detailed information of that history information by fetching view_project_history.php
+*
+* @param hid The id of the entry in the history table the user wishes to view
+*/
 function viewHistory(hid) {
     openPopup();
     $.ajax({
@@ -189,21 +275,6 @@ function restoreWholeTable(timestamp) {
         url: "php/admin/history/restore_all_history.php",
         data: {data: $("#datetimepicker").val()},
         success: printCallback
-    });
-}
-
-function deleteHistory() {
-    var projects = $('.delete:checkbox:checked').map(function () {
-        return this.id;
-    }).get();
-
-    $.ajax({
-        type: "POST",
-        url: "php/admin/history/delete_history.php",
-        data: {data: JSON.stringify(projects)}, 
-        success: function (data) {
-            loadHistory();
-        }
     });
 }
 
