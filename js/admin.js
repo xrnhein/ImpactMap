@@ -256,7 +256,12 @@ function viewHistory(hid) {
     });
 }
 
+/**
+* Called when the root user selects history items and clicks restore history in history_table.php. This function calls restore_history.php and sends the history ids (hid) of each
+* checked item in the list.
+*/
 function restoreHistory() {
+    // Store the ids of all checked history items in a list
     var projects = $('.delete:checkbox:checked').map(function () {
         return this.id;
     }).get();
@@ -269,7 +274,11 @@ function restoreHistory() {
     });
 }
 
-function restoreWholeTable(timestamp) {
+/** 
+* Called from history_table.php when the root user wants to restore the whole project table to a certain time. The timestamp is taken from the datetimepicker input field
+* and sent to restore_all_history.php
+*/
+function restoreWholeTable() {
     $.ajax({
         type: "POST",
         url: "php/admin/history/restore_all_history.php",
@@ -278,6 +287,9 @@ function restoreWholeTable(timestamp) {
     });
 }
 
+/**
+* Called from admin.php to load the content div with the table of centers from center_table.php
+*/
 function loadCenters() {
     $.ajax({
         type: "POST",
@@ -286,6 +298,11 @@ function loadCenters() {
     });
 }
 
+/**
+* Called from center_table.php when a user clicks on a center in the list or add center. The popup dialog is opened and populated with data from edit_center.php
+*
+* @param cid The id of the center to edit
+*/
 function editCenter(cid) {
     openPopup();
     $.ajax({
@@ -297,6 +314,11 @@ function editCenter(cid) {
     });
 }
 
+/**
+* Called when a user submits their changes on the edit center popup dialog. Data is sent to submit_center_edit.php
+*
+* @param cid The id of the center to edit
+*/
 function submitEditCenter(cid) {
     $.ajax({
         type: "POST",
@@ -313,6 +335,9 @@ function submitEditCenter(cid) {
     closePopup();
 }
 
+/**
+* Called when a user wants to delete centers from center_table.php. Center ids are taken from checked checkboxes and sent to delete_centers.php
+*/
 function deleteCenters() {
     var centers = $('.delete:checkbox:checked').map(function () {
         return this.id;
@@ -328,6 +353,9 @@ function deleteCenters() {
     });
 }
 
+/**
+* Called from admin.php when the root user wants to edit the user table. Loads the content div with data from user_table.php
+*/
 function loadUsers() {
     $.ajax({
         type: "POST",
@@ -336,6 +364,11 @@ function loadUsers() {
     });
 }
 
+/** 
+* Called from the user table when the root user clicks on an entry in the table or clicks add user, the popup dialog is loaded with content from edit_user.php
+*
+* @param uid The id of the user to edit, -1 if adding a user
+*/
 function editUser(uid) {
     openPopup();
     $.ajax({
@@ -347,6 +380,11 @@ function editUser(uid) {
     });
 }
 
+/**
+* Submit the changes to the user to the server at submit_user_edit.php
+*
+* @param uid The id of the user to edit, -1 if adding a user
+*/
 function submitEditUser(uid) {
     $.ajax({
         type: "POST",
@@ -362,6 +400,9 @@ function submitEditUser(uid) {
     closePopup();
 }
 
+/**
+* Called when the root user wants to delete users from user_table.php. User ids are taken from checked checkboxes and sent to delete_users.php
+*/
 function deleteUsers() {
     var users = $('.delete:checkbox:checked').map(function () {
         return this.id;
@@ -377,11 +418,17 @@ function deleteUsers() {
     });
 }
 
+/**
+* Display the popup dialog
+*/
 function openPopup() {
     $("#popup").show();
     $("#bg").show();
 }
 
+/**
+* Hide the popup dialog
+*/
 function closePopup() {
     $("#popup").hide();
     $("#bg").hide();
@@ -390,6 +437,9 @@ function closePopup() {
     position = null;
 }
 
+/**
+* Load the change password page from change_password.php
+*/
 function changePassword() {
     $.ajax({
         type: "POST",
@@ -398,15 +448,26 @@ function changePassword() {
     });
 }
 
+/**
+* Print any callback data passed after an ajax call
+*
+* @param data The data to be printed
+*/
 function printCallback(data) {
     console.log(data);
 }
 
+/**
+* Format the current date and time in a MySQL friendly way
+*/
 function formattedDateTime() {
     var d = new Date();
     return d.getFullYear() + "-" + timeStampValue((d.getMonth() + 1)) + "-" + timeStampValue(d.getDate()) + " " + timeStampValue(d.getHours()) + ":" + timeStampValue(d.getMinutes());
 }
 
+/**
+* Add a leading "0" to a number if it's less than 10 (i.e. "1" -> "01"), convenient for formatted dates and times
+*/
 function timeStampValue(num) {
    return (num < 10) ? "0" + num : num;
 }

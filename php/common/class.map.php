@@ -26,6 +26,10 @@ class Map {
         }
     }
 
+    /**
+    * Load all projects that meet the filter requirements. 
+    *
+    */
     public function load_projects($filters = array()) {
       $defaults = array(
           'limit' => 250,
@@ -103,6 +107,10 @@ class Map {
         }
     }
 
+    /**
+    * Update a project in the database and add a new entry to the history, requires all columns of data to be present in POST
+    *
+    */
     public function update_project() {
         $sql = "UPDATE Projects SET cid = :cid, title = :title, status = :status, startDate = :startDate, endDate = :endDate, buildingName = :buildingName, address = :address, zip = :zip, type = :type, summary = :summary, 
                                     link = :link, pic = :pic, contactName = :contactName, contactEmail = :contactEmail, contactPhone = :contactPhone, stemmedSearchText = :stemmedSearchText, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
@@ -138,6 +146,10 @@ class Map {
         }
     }
 
+    /**
+    * Load the most recent versions of each unique project up to the given timestamp from the History table, only returns a few select columns
+    *
+    */
     public function load_history($filters = array()) {
       $results = NULL;
       $sql = "SELECT hid, time, lat, lng, title FROM History h1 WHERE h1.time =
@@ -166,7 +178,11 @@ class Map {
       return $results;
   }
 
-    public function load_history_details($hid) {
+  /**
+  * Return the all the columns of the history for a given history id (hid)
+  *
+  */
+  public function load_history_details($hid) {
         $hid = intval($hid);
         $sql = "SELECT * FROM History WHERE hid=:hid LIMIT 1";
         try {
@@ -178,8 +194,12 @@ class Map {
             echo $e -> getMessage();
             return NULL;
         }
-    }
+  }
 
+  /**
+  * Restore an item from the history to the project table. Check to see if the unique pid of the project already exists in the project table, if so update, if not insert into the table.
+  *
+  */
   public function restore_history($hid) {
       $hid = intval($hid);
       $exists = "SELECT pid FROM Projects WHERE pid = (SELECT pid FROM History WHERE hid=:hid LIMIT 1) LIMIT 1";
@@ -209,7 +229,12 @@ class Map {
       }
   }
 
-   public function restore_all_history($timestamp) {
+  /**
+  * Restore all items from the history at a given timestamp to the project table. First delete all contents of the project table
+  * and then insert all qualifying items from the history table into the project table.
+  *
+  */
+  public function restore_all_history($timestamp) {
       echo $timestamp;
       $sql = "DELETE FROM Projects;
               INSERT INTO Projects
@@ -227,6 +252,10 @@ class Map {
       }
   }
 
+  /**
+  * Remove an item from the history table by its history id (hid)
+  *
+  */
   public function remove_history($hid) {
       $hid = intval($hid);
       $sql = "DELETE FROM History WHERE hid=:hid LIMIT 1";
@@ -241,7 +270,10 @@ class Map {
       }
   }
 
-
+  /**
+  * Return a list of all the centers found in the database
+  *
+  */
   public function load_centers() {
       $sql = "SELECT * FROM Centers";
       try {
@@ -256,6 +288,10 @@ class Map {
       return $results;
   }
 
+  /**
+  * Load the details of a specific center by its center id (cid)
+  *
+  */
   public function load_center($cid) {
         $cid = intval($cid);
         $sql = "SELECT * FROM Centers WHERE cid=:cid LIMIT 1";
@@ -270,6 +306,10 @@ class Map {
         }
     }
 
+  /**
+  * Add a new center to the Center table
+  *
+  */
   public function add_center() {
     $sql = "INSERT INTO Centers(name, acronym, color) 
             VALUES (:name, :acronym, :color)";
@@ -284,8 +324,12 @@ class Map {
         echo $e -> getMessage();
         return FALSE;
     }
-}
+  }
 
+  /**
+  * Update an existing center in the Center table
+  *
+  */
   public function update_center() {
     $sql = "UPDATE Centers SET
               name = :name,
@@ -305,8 +349,12 @@ class Map {
         echo $e -> getMessage();
         return FALSE;
     }
-}
+  }
 
+  /**
+  * Checks whether there are any projects that reference a given center id (cid), if true the user won't be able to delete that center
+  *
+  */
   public function center_referred_to($cid) {
     $cid = intval($cid);
     $sql1 = "SELECT pid FROM Projects WHERE cid=:cid LIMIT 1";
@@ -328,6 +376,10 @@ class Map {
     }
   }
 
+  /**
+  * Remove a given center from the Center table by its center id (cid)
+  *
+  */
   public function remove_center($cid) {
         $cid = intval($cid);
         $sql = "DELETE FROM Centers WHERE cid=:cid LIMIT 1";
@@ -340,8 +392,12 @@ class Map {
             echo $e -> getMessage();
             return FALSE;
         }
-    }
+  }
 
+  /**
+  * Return the list of users in the User table
+  *
+  */
   public function load_users() {
       $sql = "SELECT * FROM Users";
       try {
@@ -356,6 +412,10 @@ class Map {
       return $results;
   }
 
+  /**
+  * Return the details of a specific user based on their user id (uid)
+  *
+  */
   public function load_user($uid) {
         $uid = intval($uid);
         $sql = "SELECT * FROM Users WHERE uid=:uid LIMIT 1";
@@ -368,8 +428,12 @@ class Map {
             echo $e -> getMessage();
             return NULL;
         }
-    }
+  }
 
+  /**
+  * Add a user to the User table, data comes from POST
+  *
+  */
   public function add_user() {
     $sql = "INSERT INTO Users(email, cas, admin) 
             VALUES (:email, :cas, :admin)";
@@ -384,8 +448,12 @@ class Map {
         echo $e -> getMessage();
         return FALSE;
     }
-}
+  }
 
+  /**
+  * Update a user's information, user id (uid) comes from POST
+  *
+  */
   public function update_user() {
     $sql = "UPDATE Users SET
               cas = :cas,
@@ -403,8 +471,12 @@ class Map {
         echo $e -> getMessage();
         return FALSE;
     }
-}
+  }
 
+  /**
+  * Remove a user from the User table based on their user id (uid)
+  *
+  */
   public function remove_user($uid) {
         $uid = intval($uid);
         $sql = "DELETE FROM Users WHERE uid=:uid LIMIT 1";
@@ -473,8 +545,8 @@ class Map {
 
 
     /**
-     * Center
-     */
+    * Search the Projects table for any projects whose stemmedSearchText column matches the give search text
+    */
     public function search($searchPhrase) {
         $sql = "SELECT title FROM Projects WHERE MATCH (stemmedSearchText) AGAINST (:searchPhrase IN BOOLEAN MODE) LIMIT 10";
         try {
@@ -489,6 +561,10 @@ class Map {
         return NULL;
     }
 
+    /**
+    * Compile all searchable fields into a json file which will be sent to end users of the map for search suggestions. This is called any time a project is added, edited, or deleted.
+    *
+    */
     public function generate_prefetch() {
       $sql = "SELECT title, buildingName, address, zip, contactName FROM Projects";
       try {

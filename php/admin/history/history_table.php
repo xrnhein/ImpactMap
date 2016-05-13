@@ -46,5 +46,5 @@
 </table>
 <a href="#" onclick="restoreHistory()">Restore selected projects</a><br>
 <?php
-	echo '<a href="#" onclick="restoreWholeTable(\'' . $_POST['timestamp'] . '\')">Restore whole table</a>';
+	echo '<a href="#" onclick="restoreWholeTable()">Restore whole table</a>';
 ?>
