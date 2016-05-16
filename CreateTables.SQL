@@ -1,6 +1,6 @@
 CREATE TABLE Projects (
 	pid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	cid INT,
+	cid INT UNSIGNED,
 	title VARCHAR(100),
 	status INT,
 	startDate VARCHAR(20),
@@ -12,9 +12,7 @@ CREATE TABLE Projects (
 	summary TEXT,
 	link VARCHAR(200),
 	pic VARCHAR(200),
-	contactName VARCHAR(100),
-	contactEmail VARCHAR(100),
-	contactPhone VARCHAR(16),
+	pmid INT UNSIGNED,
 	fundedBy VARCHAR(100),
 	keywords VARCHAR(100),
 	stemmedSearchText TEXT,
@@ -24,11 +22,11 @@ CREATE TABLE Projects (
 	FULLTEXT(stemmedSearchText)
 ) ENGINE=MyISAM;
 
-CREATE TABLE History (
+CREATE TABLE ProjectHistory (
 	hid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	time TIMESTAMP,
-	pid INT,
-	cid INT,
+	pid INT UNSIGNED,
+	cid INT UNSIGNED,
 	title VARCHAR(100),
 	status INT,
 	startDate VARCHAR(20),
@@ -40,9 +38,7 @@ CREATE TABLE History (
 	summary TEXT,
 	link VARCHAR(200),
 	pic VARCHAR(200),
-	contactName VARCHAR(100),
-	contactEmail VARCHAR(100),
-	contactPhone VARCHAR(16),
+	pmid INT UNSIGNED,
 	fundedBy VARCHAR(100),
 	keyWords VARCHAR(100),
 	stemmedSearchText TEXT,
@@ -59,11 +55,32 @@ CREATE TABLE Centers (
 	color CHAR(7)
 );
 
+CREATE TABLE CenterHistory (
+	chid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	cid INT UNSIGNED,
+	name VARCHAR(100),
+	acronym VARCHAR(8),
+	color CHAR(7)
+);
+
+CREATE TABLE ProjectManagers (
+	pmid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	contactName VARCHAR(100),
+	contactEmail VARCHAR(100),
+	contactPhone VARCHAR(16)
+);
+
+CREATE TABLE ProjectManagersHistory (
+	pmhid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	pmid INT UNSIGNED,
+	contactName VARCHAR(100),
+	contactEmail VARCHAR(100),
+	contactPhone VARCHAR(16)
+);
+
 CREATE TABLE Users (
 	uid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	email VARCHAR(64),
 	password VARCHAR(64),
-	root BOOLEAN,
-	admin BOOLEAN,
-	cas BOOLEAN
+	root BOOLEAN
 );
