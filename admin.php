@@ -18,30 +18,51 @@
 		<link rel="stylesheet" href="css/admin.css">
 		<link rel="stylesheet" href="css/project_table.css">
 
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
 		<script src="js/admin.js"></script>
 	</head>
 	<body>
-		<div id="navbar">
-			<table>
-				<?php
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#impactNav">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">
+					<img alt="Brand" src="img/brand.png" height="40px" width="40px">
+				</a>
+		    </div>
+		    <div class="collapse navbar-collapse" id="impactNav">
+			    <ul class="nav navbar-nav">
+			    	<?php
 
-					// This is just temporary until we have a database of users
-					$usertype = "admin";
+						// This is just temporary until we have a database of users
+						$usertype = "admin";
 
-					echo "<tr><td onclick='loadProjects()'>Manage projects</td></tr>";
-					if ($usertype == "admin") {
-						echo "<tr><td onclick='loadUsers()'>Manage users</td></tr>";
-						echo "<tr><td onclick='loadCenters()'>Manage centers</td></tr>";
-						echo "<tr><td onclick='loadHistory()'>Restore projects</td></tr>";
-					}
-					
-					echo "<tr><td onclick='changePassword()''>Change password</td></tr>";
-					
-				?>
-			</table>
-		</div>
-		<div id="content"></div>
+						echo '<li id="projects" class="active"><a href="#" onclick="loadProjects()">Projects</a></li>';
+						echo '<li id="centers"><a href="#" onclick="loadCenters()">Centers</a></li>';
+						echo '<li id="contacts"><a href="#" onclick="loadContacts()">Contacts</a></li>';
+						echo '<li id="history"><a href="#" onclick="loadHistory()">History</a></li>';
+						if ($usertype == "admin")
+							echo '<li id="users"><a href="#" onclick="loadUsers()">Users</a></li>';
+						echo '<li id="profile"><a href="#" onclick="changePassword()">Profile</a></li>';
+					?>
+			    </ul>
+			    <?php
+			    	$username = "Testy McTestface";
+
+			    	echo '<p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">' . $username . '</a></p>';
+			    ?>
+			</div>
+		  </div>
+		</nav>
+		<div id="content" class="container"></div>
 		<div id="popup" class="form-control"></div>
 		<div id="bg"></div>
+		<div id="impactModal" class="modal fade" tabindex="-1" role="dialog">
+		</div><!-- /.modal -->
 	</body>
 </html>

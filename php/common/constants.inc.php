@@ -9,4 +9,5 @@ define('DB_NAME', 'ImpactMap');
 // Other constants
 define('MAPS_API', '');
 
+$STATUS = array("Planned", "Ongoing", "Completed");
 ?>

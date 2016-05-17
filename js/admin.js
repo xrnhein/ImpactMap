@@ -55,6 +55,7 @@ $(document).ready( function() {
 	$("#popup").hide();
     $("#bg").hide();
     $("#bg").click(closePopup);
+    loadProjects();
 });
 
 /**
@@ -82,14 +83,16 @@ function historyContentCallback(data) {
 * @param data The html content returned from the server
 */
 function projectPopupCallback(data) {
-    $("#popup").html(data);
+    //$("#popup").html(data);
+    $("#impactModal").html(data);
+    $("#impactModal").modal('show');
     initMap(true);
     $("#address").keyup(function() {
         geocoder.geocode({
             address: $("#address").val()
         }, geocodeCallback);
     });
-    $("#popup").scrollTop(0);
+    //$("#popup").scrollTop(0);
 }
 
 /**
@@ -109,7 +112,9 @@ function historyPopupCallback(data) {
 * @param data The html content returned from the server
 */
 function popupCallback(data) {
-    $("#popup").html(data);
+    //$("#popup").html(data);
+    $("#impactModal").html(data);
+    $("#impactModal").modal('show');
 }
 
 /**
@@ -140,6 +145,8 @@ function geocodeCallback(results, status) {
 * Called by admin.php when the user wants to view the table of projects
 */
 function loadProjects() {
+    $(".active").removeClass("active");
+    $("#projects").addClass("active");
     $.ajax({
         type: "POST",
         url: "php/admin/projects/project_table.php",
@@ -153,7 +160,6 @@ function loadProjects() {
 * @param pid The id of the project to be edited. -1 if adding a project.
 */
 function editProject(pid) {
-    openPopup();
     $.ajax({
         type: "POST",
         data: {pid: pid},
@@ -195,14 +201,16 @@ function submitEditProject(pid) {
                summary: $("#summary").val(),
                link: $("#link").val(),
                pic: $("#pic").val(),
-               contactName: $("#contactName").val(),
-               contactEmail: $("#contactEmail").val(),
-               contactPhone: $("#contactPhone").val(),
+               conid: 1,//$("#conid").val(),
+               fundedBy: "test",//$("#fundedBy").val(),
+               keyWords: "test",//$("#keyWords").val(),
                stemmedSearchText: searchWords.join(" "),
+               visible: 1,//$("#visible").val(),
                lat: marker.getPosition().lat(),
                lng: marker.getPosition().lng()},
         data_type: "json",
         success: function (data) {
+            printCallback(data);
             loadProjects();
         }
     });
@@ -231,6 +239,8 @@ function deleteProjects() {
 * Called by admin.php to load history_table.php. A datetimepicker is created and its value is initialized to the current date and time
 */
 function loadHistory() {
+    $(".active").removeClass("active");
+    $("#history").addClass("active");
     var ts = ($("#datetimepicker").val() != null) ? $("#datetimepicker").val() : formattedDateTime();
     $.ajax({
         type: "POST",
@@ -291,6 +301,8 @@ function restoreWholeTable() {
 * Called from admin.php to load the content div with the table of centers from center_table.php
 */
 function loadCenters() {
+    $(".active").removeClass("active");
+    $("#centers").addClass("active");
     $.ajax({
         type: "POST",
         url: "php/admin/centers/center_table.php",
@@ -304,7 +316,6 @@ function loadCenters() {
 * @param cid The id of the center to edit
 */
 function editCenter(cid) {
-    openPopup();
     $.ajax({
         type: "POST",
         data: {cid: cid},
@@ -354,9 +365,81 @@ function deleteCenters() {
 }
 
 /**
+* Called from admin.php to load the content div with the table of contacts from contact_table.php
+*/
+function loadContacts() {
+    $(".active").removeClass("active");
+    $("#contacts").addClass("active");
+    $.ajax({
+        type: "POST",
+        url: "php/admin/contacts/contact_table.php",
+        success: contentCallback
+    });
+}
+
+/**
+* Called from contact_table.php when a user clicks on a contact in the list or add contact. The popup dialog is opened and populated with data from edit_contact.php
+*
+* @param conid The id of the contact to edit
+*/
+function editContact(conid) {
+    openPopup();
+    $.ajax({
+        type: "POST",
+        data: {conid: conid},
+        data_type: "json",
+        url: "php/admin/contacts/edit_contact.php",
+        success: popupCallback
+    });
+}
+
+/**
+* Called when a user submits their changes on the edit contact popup dialog. Data is sent to submit_contact_edit.php
+*
+* @param conid The id of the contact to edit
+*/
+function submitEditContact(conid) {
+    console.log('test');
+    $.ajax({
+        type: "POST",
+        url: "php/admin/contacts/submit_contact_edit.php",
+        data: {conid: conid,
+               name: $("#name").val(),
+               email: $("#email").val(),
+               phone: $("#phone").val()},
+        data_type: "json",
+        success: function (data) {
+            loadContacts();
+        }
+    });
+    closePopup();
+}
+
+/**
+* Called when a user wants to delete contacts from contact_table.php. Contact ids are taken from checked checkboxes and sent to delete_contacts.php
+*/
+function deleteContacts() {
+    var contacts = $('.delete:checkbox:checked').map(function () {
+        return this.id;
+    }).get();
+
+    $.ajax({
+        type: "POST",
+        url: "php/admin/contacts/delete_contacts.php",
+        data: {data: JSON.stringify(contacts)}, 
+        success: function (data) {
+            loadContacts();
+        }
+    });
+}
+
+
+/**
 * Called from admin.php when the root user wants to edit the user table. Loads the content div with data from user_table.php
 */
 function loadUsers() {
+    $(".active").removeClass("active");
+    $("#users").addClass("active");
     $.ajax({
         type: "POST",
         url: "php/admin/users/user_table.php",
@@ -441,6 +524,8 @@ function closePopup() {
 * Load the change password page from change_password.php
 */
 function changePassword() {
+    $(".active").removeClass("active");
+    $("#profile").addClass("active");
     $.ajax({
         type: "POST",
         url: "php/admin/change_password.php",

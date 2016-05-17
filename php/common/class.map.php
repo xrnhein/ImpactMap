@@ -69,42 +69,61 @@ class Map {
       return $results;
   }
 
+  /**
+  * Return a list of all the projects found in the database
+  *
+  */
+  public function load_projects_full() {
+      $sql = "SELECT * FROM Projects";
+      try {
+          $stmt = $this->_db->prepare($sql);
+          $stmt -> execute();
+          return $stmt -> fetchAll();
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+          return NULL;
+      }
+
+      return $results;
+  }
+
     /**
      * Test function to create entry in the database.
      * Must be set: POST, POST[address], POST[title], POST[description]
      * @return bool
      */
     public function add_project() {
-        $sql = "INSERT INTO Projects(cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, stemmedSearchText, lat, lng) 
-                VALUES (:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :stemmedSearchText, :lat, :lng);
-                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, stemmedSearchText, lat, lng) 
-                VALUES ((SELECT MAX(pid) FROM Projects),:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :stemmedSearchText, :lat, :lng)";
-        try {
-            $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(":cid",          $_POST['cid'], PDO::PARAM_INT);
-            $stmt -> bindParam(":title",        $_POST['title'], PDO::PARAM_STR);
-            $stmt -> bindParam(":status",       $_POST['status'], PDO::PARAM_INT);
-            $stmt -> bindParam(":startDate",    $_POST['startDate'], PDO::PARAM_STR);
-            $stmt -> bindParam(":endDate",      $_POST['endDate'], PDO::PARAM_STR);
-            $stmt -> bindParam(":buildingName", $_POST['buildingName'], PDO::PARAM_STR);
-            $stmt -> bindParam(":address",      $_POST['address'], PDO::PARAM_STR);
-            $stmt -> bindParam(":zip",          $_POST['zip'], PDO::PARAM_INT);
-            $stmt -> bindParam(":type",         $_POST['type'], PDO::PARAM_INT);
-            $stmt -> bindParam(":summary",      $_POST['summary'], PDO::PARAM_STR);
-            $stmt -> bindParam(":link",         $_POST['link'], PDO::PARAM_STR);
-            $stmt -> bindParam(":pic",          $_POST['pic'], PDO::PARAM_STR);
-            $stmt -> bindParam(":contactName",  $_POST['contactName'], PDO::PARAM_STR);
-            $stmt -> bindParam(":contactEmail", $_POST['contactEmail'], PDO::PARAM_STR);
-            $stmt -> bindParam(":contactPhone", $_POST['contactPhone'], PDO::PARAM_STR);
-            $stmt -> bindParam(":stemmedSearchText", $_POST['stemmedSearchText'], PDO::PARAM_STR);
-            $stmt -> bindParam(":lat",          $_POST['lat'], PDO::PARAM_STR);
-            $stmt -> bindParam(":lng",          $_POST['lng'], PDO::PARAM_STR);
-            $stmt -> execute();
-            return TRUE;
-        } catch(PDOException $e) {
-            echo $e -> getMessage();
-            return FALSE;
-        }
+      $sql = "INSERT INTO Projects(cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, lat, lng) 
+              VALUES (:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keyWords, :stemmedSearchText, :visible, :lat, :lng);
+              INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, deleted, lat, lng) 
+              VALUES ((SELECT MAX(pid) FROM Projects),:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keyWords, :stemmedSearchText, :visible, FALSE, :lat, :lng)";
+      try {
+          $stmt = $this->_db->prepare($sql);
+          $stmt -> bindParam(":cid",               $_POST['cid'], PDO::PARAM_INT);
+          $stmt -> bindParam(":title",             $_POST['title'], PDO::PARAM_STR);
+          $stmt -> bindParam(":status",            $_POST['status'], PDO::PARAM_INT);
+          $stmt -> bindParam(":startDate",         $_POST['startDate'], PDO::PARAM_STR);
+          $stmt -> bindParam(":endDate",           $_POST['endDate'], PDO::PARAM_STR);
+          $stmt -> bindParam(":buildingName",      $_POST['buildingName'], PDO::PARAM_STR);
+          $stmt -> bindParam(":address",           $_POST['address'], PDO::PARAM_STR);
+          $stmt -> bindParam(":zip",               $_POST['zip'], PDO::PARAM_INT);
+          $stmt -> bindParam(":type",              $_POST['type'], PDO::PARAM_INT);
+          $stmt -> bindParam(":summary",           $_POST['summary'], PDO::PARAM_STR);
+          $stmt -> bindParam(":link",              $_POST['link'], PDO::PARAM_STR);
+          $stmt -> bindParam(":pic",              $_POST['pic'], PDO::PARAM_STR);
+          $stmt -> bindParam(":conid",             $_POST['conid'], PDO::PARAM_INT);
+          $stmt -> bindParam(":fundedBy",          $_POST['fundedBy'], PDO::PARAM_STR);
+          $stmt -> bindParam(":keyWords",          $_POST['keyWords'], PDO::PARAM_STR);
+          $stmt -> bindParam(":stemmedSearchText", $_POST['stemmedSearchText'], PDO::PARAM_STR);
+          $stmt -> bindParam(":visible",           $_POST['visible'], PDO::PARAM_BOOL);
+          $stmt -> bindParam(":lat",               $_POST['lat'], PDO::PARAM_STR);
+          $stmt -> bindParam(":lng",               $_POST['lng'], PDO::PARAM_STR);
+          $stmt -> execute();
+          return TRUE;
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+          return FALSE;
+      }
     }
 
     /**
@@ -113,31 +132,32 @@ class Map {
     */
     public function update_project() {
         $sql = "UPDATE Projects SET cid = :cid, title = :title, status = :status, startDate = :startDate, endDate = :endDate, buildingName = :buildingName, address = :address, zip = :zip, type = :type, summary = :summary, 
-                                    link = :link, pic = :pic, contactName = :contactName, contactEmail = :contactEmail, contactPhone = :contactPhone, stemmedSearchText = :stemmedSearchText, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
-                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, stemmedSearchText, lat, lng) 
-                VALUES (:pid, :cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :contactName, :contactEmail, :contactPhone, :stemmedSearchText, :lat, :lng)";
+                                    link = :link, pic = :pic, conid = :conid, fundedBy = :fundedBy, keyWords = :keyWords, stemmedSearchText = :stemmedSearchText, visible = :visible, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
+                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, deleted, lat, lng) 
+                VALUES (:pid, :cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keyWords, :stemmedSearchText, :visible, FALSE, :lat, :lng)";
 
         try {
             $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(":pid",          $_POST['pid'], PDO::PARAM_INT);
-            $stmt -> bindParam(":cid",          $_POST['cid'], PDO::PARAM_INT);
-            $stmt -> bindParam(":title",        $_POST['title'], PDO::PARAM_STR);
-            $stmt -> bindParam(":status",       $_POST['status'], PDO::PARAM_INT);
-            $stmt -> bindParam(":startDate",    $_POST['startDate'], PDO::PARAM_STR);
-            $stmt -> bindParam(":endDate",      $_POST['endDate'], PDO::PARAM_STR);
-            $stmt -> bindParam(":buildingName", $_POST['buildingName'], PDO::PARAM_STR);
-            $stmt -> bindParam(":address",      $_POST['address'], PDO::PARAM_STR);
-            $stmt -> bindParam(":zip",          $_POST['zip'], PDO::PARAM_INT);
-            $stmt -> bindParam(":type",         $_POST['type'], PDO::PARAM_INT);
-            $stmt -> bindParam(":summary",      $_POST['summary'], PDO::PARAM_STR);
-            $stmt -> bindParam(":link",         $_POST['link'], PDO::PARAM_STR);
-            $stmt -> bindParam(":pic",          $_POST['pic'], PDO::PARAM_STR);
-            $stmt -> bindParam(":contactName",  $_POST['contactName'], PDO::PARAM_STR);
-            $stmt -> bindParam(":contactEmail", $_POST['contactEmail'], PDO::PARAM_STR);
-            $stmt -> bindParam(":contactPhone", $_POST['contactPhone'], PDO::PARAM_STR);
+            $stmt -> bindParam(":pid",               $_POST['pid'], PDO::PARAM_INT);
+            $stmt -> bindParam(":cid",               $_POST['cid'], PDO::PARAM_INT);
+            $stmt -> bindParam(":title",             $_POST['title'], PDO::PARAM_STR);
+            $stmt -> bindParam(":status",            $_POST['status'], PDO::PARAM_INT);
+            $stmt -> bindParam(":startDate",         $_POST['startDate'], PDO::PARAM_STR);
+            $stmt -> bindParam(":endDate",           $_POST['endDate'], PDO::PARAM_STR);
+            $stmt -> bindParam(":buildingName",      $_POST['buildingName'], PDO::PARAM_STR);
+            $stmt -> bindParam(":address",           $_POST['address'], PDO::PARAM_STR);
+            $stmt -> bindParam(":zip",               $_POST['zip'], PDO::PARAM_INT);
+            $stmt -> bindParam(":type",              $_POST['type'], PDO::PARAM_INT);
+            $stmt -> bindParam(":summary",           $_POST['summary'], PDO::PARAM_STR);
+            $stmt -> bindParam(":link",              $_POST['link'], PDO::PARAM_STR);
+            $stmt -> bindParam(":pic",               $_POST['pic'], PDO::PARAM_STR);
+            $stmt -> bindParam(":conid",              $_POST['conid'], PDO::PARAM_INT);
+            $stmt -> bindParam(":fundedBy",          $_POST['fundedBy'], PDO::PARAM_STR);
+            $stmt -> bindParam(":keyWords",          $_POST['keyWords'], PDO::PARAM_STR);
             $stmt -> bindParam(":stemmedSearchText", $_POST['stemmedSearchText'], PDO::PARAM_STR);
-            $stmt -> bindParam(":lat",          $_POST['lat'], PDO::PARAM_STR);
-            $stmt -> bindParam(":lng",          $_POST['lng'], PDO::PARAM_STR);
+            $stmt -> bindParam(":visible",           $_POST['visible'], PDO::PARAM_BOOL);
+            $stmt -> bindParam(":lat",               $_POST['lat'], PDO::PARAM_STR);
+            $stmt -> bindParam(":lng",               $_POST['lng'], PDO::PARAM_STR);
             $stmt -> execute();
             return TRUE;
         } catch(PDOException $e) {
@@ -145,6 +165,59 @@ class Map {
             return FALSE;
         }
     }
+
+        /**
+     * Returns all entries in the database as a 2D associative array.
+     *
+     * @param $filters array  A list of filter options:
+     *                          limit: max number of entries to fetch, default 100
+     *                          minLat: min latitude
+     *                          maxLat: max latitude
+     *                          minLng: min longitude
+     *                          maxLng: max longitude
+     *                          category: category
+     *
+     * @return array          A list of entries with associative index being the column names
+     */
+
+    /**
+     * Removes an individual entry from the database. Returns if operation was successful.
+     * @param $id int   The ID of the entry you want to remove
+     * @return bool     TRUE if successfully removed, FALSE otherwise
+     */
+    public function remove_project($pid) {
+        $pid = intval($pid);
+        $sql = "DELETE FROM Projects WHERE pid=:pid LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
+            $stmt -> execute();
+            return TRUE;
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return FALSE;
+        }
+    }
+
+    /**
+     * Returns all the information stored on the database from one project in an associative array
+     * @param $id int       The ID of the project
+     * @return array        The project entry
+     */
+    public function load_project_details($pid) {
+        $pid = intval($pid);
+        $sql = "SELECT * FROM Projects WHERE pid=:pid LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
+            $stmt -> execute();
+            return $stmt -> fetch();
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return NULL;
+        }
+    }
+
 
     /**
     * Load the most recent versions of each unique project up to the given timestamp from the History table, only returns a few select columns
@@ -204,10 +277,10 @@ class Map {
       $hid = intval($hid);
       $exists = "SELECT pid FROM Projects WHERE pid = (SELECT pid FROM History WHERE hid=:hid LIMIT 1) LIMIT 1";
       $insert = "INSERT INTO Projects
-                 SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, lat, lng 
+                 SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, lat, lng 
                  FROM History WHERE hid=:hid LIMIT 1";
       $update = "UPDATE Projects p, History h
-                 SET p.cid = h.cid, p.title = h.title, p.status = h.status, p.startDate = h.startDate, p.endDate = h.endDate, p.buildingName = h.buildingName, p.address = h.address, p.zip = h.zip, p.type = h.type, p.summary = h.summary, p.link = h.link, p.pic = h.pic, p.contactName = h.contactName, p.contactEmail = h.contactEmail, p.contactPhone = h.contactPhone, p.lat = h.lat, p.lng = h.lng
+                 SET p.cid = h.cid, p.title = h.title, p.status = h.status, p.startDate = h.startDate, p.endDate = h.endDate, p.buildingName = h.buildingName, p.address = h.address, p.zip = h.zip, p.type = h.type, p.summary = h.summary, p.link = h.link, p.pic = h.pic, p.conid = h.conid, p.fundedBy = h.fundedBy, p.keyWords = h.keyWords, p.stemmedSearchText = h.stemmedSearchText, p.visible = h.visible, p.lat = h.lat, p.lng = h.lng
                  WHERE p.pid = h.pid AND h.hid = :hid";
       try {
           $stmt = $this->_db->prepare($exists);
@@ -238,7 +311,7 @@ class Map {
       echo $timestamp;
       $sql = "DELETE FROM Projects;
               INSERT INTO Projects
-              SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, contactName, contactEmail, contactPhone, lat, lng 
+              SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, lat, lng 
               FROM History h1 WHERE h1.time =
                 (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts)";
       try {
@@ -394,6 +467,131 @@ class Map {
         }
   }
 
+    /**
+  * Return a list of all the contacts found in the database
+  *
+  */
+  public function load_contacts() {
+      $sql = "SELECT * FROM Contacts";
+      try {
+          $stmt = $this->_db->prepare($sql);
+          $stmt -> execute();
+          return $stmt -> fetchAll();
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+          return NULL;
+      }
+
+      return $results;
+  }
+
+  /**
+  * Load the details of a specific contact by his/her contact id (conid)
+  *
+  */
+  public function load_contact($conid) {
+        $conid = intval($conid);
+        $sql = "SELECT * FROM Contacts WHERE conid=:conid LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":conid", $conid, PDO::PARAM_INT);
+            $stmt -> execute();
+            return $stmt -> fetch();
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return NULL;
+        }
+    }
+
+  /**
+  * Add a new center to the Contact table
+  *
+  */
+  public function add_contact() {
+    $sql = "INSERT INTO Contacts(name, email, phone) 
+            VALUES (:name, :email, :phone)";
+    try {
+        $stmt = $this->_db->prepare($sql);
+        $stmt -> bindParam(":name",    $_POST['name'], PDO::PARAM_STR);
+        $stmt -> bindParam(":email", $_POST['email'], PDO::PARAM_STR);
+        $stmt -> bindParam(":phone",   $_POST['phone'], PDO::PARAM_STR);
+        $stmt -> execute();
+        return TRUE;
+    } catch(PDOException $e) {
+        echo $e -> getMessage();
+        return FALSE;
+    }
+  }
+
+  /**
+  * Update an existing center in the Contact table
+  *
+  */
+  public function update_contact() {
+    $sql = "UPDATE Contacts SET
+              name = :name,
+              email = :email,
+              phone = :phone
+            WHERE conid = :conid LIMIT 1
+            ";
+    try {
+        $stmt = $this->_db->prepare($sql);
+        $stmt -> bindParam(":conid",     $_POST['conid'], PDO::PARAM_INT);
+        $stmt -> bindParam(":name",    $_POST['name'], PDO::PARAM_STR);
+        $stmt -> bindParam(":email", $_POST['email'], PDO::PARAM_STR);
+        $stmt -> bindParam(":phone",   $_POST['phone'], PDO::PARAM_STR);
+        $stmt -> execute();
+        return TRUE;
+    } catch(PDOException $e) {
+        echo $e -> getMessage();
+        return FALSE;
+    }
+  }
+
+  /**
+  * Checks whether there are any projects that reference a given contact id (conid), if true the user won't be able to delete that center
+  *
+  */
+  public function contact_referred_to($conid) {
+    $conid = intval($conid);
+    $sql1 = "SELECT pid FROM Projects WHERE conid=:conid LIMIT 1";
+    $sql2 = "SELECT pid FROM History WHERE conid=:conid LIMIT 1";
+    try {
+        $stmt1 = $this->_db->prepare($sql1);
+        $stmt1 -> bindParam(":conid", $conid, PDO::PARAM_INT);
+        $stmt1 -> execute();
+        $stmt2 = $this->_db->prepare($sql2);
+        $stmt2 -> bindParam(":conid", $conid, PDO::PARAM_INT);
+        $stmt2 -> execute();
+        if ($stmt1->rowCount() > 0 || $stmt2->rowCount() > 0)
+          return TRUE;
+        else
+          return FALSE;
+    } catch(PDOException $e) {
+        echo $e -> getMessage();
+        return FALSE;
+    }
+  }
+
+  /**
+  * Remove a given center from the Center table by its contact id (conid)
+  *
+  */
+  public function remove_contact($conid) {
+        $conid = intval($conid);
+        $sql = "DELETE FROM Contacts WHERE conid=:conid LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":conid", $conid, PDO::PARAM_INT);
+            $stmt -> execute();
+            return TRUE;
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return FALSE;
+        }
+  }
+
+
   /**
   * Return the list of users in the User table
   *
@@ -492,59 +690,6 @@ class Map {
     }
 
     /**
-     * Returns all entries in the database as a 2D associative array.
-     *
-     * @param $filters array  A list of filter options:
-     *                          limit: max number of entries to fetch, default 100
-     *                          minLat: min latitude
-     *                          maxLat: max latitude
-     *                          minLng: min longitude
-     *                          maxLng: max longitude
-     *                          category: category
-     *
-     * @return array          A list of entries with associative index being the column names
-     */
-
-    /**
-     * Removes an individual entry from the database. Returns if operation was successful.
-     * @param $id int   The ID of the entry you want to remove
-     * @return bool     TRUE if successfully removed, FALSE otherwise
-     */
-    public function remove_project($pid) {
-        $pid = intval($pid);
-        $sql = "DELETE FROM Projects WHERE pid=:pid LIMIT 1";
-        try {
-            $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
-            $stmt -> execute();
-            return TRUE;
-        } catch(PDOException $e) {
-            echo $e -> getMessage();
-            return FALSE;
-        }
-    }
-
-    /**
-     * Returns all the information stored on the database from one project in an associative array
-     * @param $id int       The ID of the project
-     * @return array        The project entry
-     */
-    public function load_project_details($pid) {
-        $pid = intval($pid);
-        $sql = "SELECT * FROM Projects WHERE pid=:pid LIMIT 1";
-        try {
-            $stmt = $this->_db->prepare($sql);
-            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
-            $stmt -> execute();
-            return $stmt -> fetch();
-        } catch(PDOException $e) {
-            echo $e -> getMessage();
-            return NULL;
-        }
-    }
-
-
-    /**
     * Search the Projects table for any projects whose stemmedSearchText column matches the give search text
     */
     public function search($searchPhrase) {
@@ -566,12 +711,12 @@ class Map {
     *
     */
     public function generate_prefetch() {
-      $sql = "SELECT title, buildingName, address, zip, contactName FROM Projects";
+      $sql = "SELECT title, buildingName, address, zip FROM Projects";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> execute();
 
-          $file = fopen("../../json/search.json", "w");
+          $file = fopen("../../../json/search.json", "w");
           fwrite($file, "[");
           while ($row = $stmt->fetch()) {
             foreach ($row as $col) {
