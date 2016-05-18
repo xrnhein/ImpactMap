@@ -13,20 +13,27 @@
         $uid = intval($_POST['uid']);
 
     $user = $map -> load_user($uid);
-
-    echo '<label>Email: </label><input type="text" class="form-control" disabled="disabled" id="email" name="email" value="' . $user['email'] . '">';
-    echo '<label>Allow CAS login only: </label><input type="checkbox" class="form-control" id="cas" name="cas"';
-    if ($user['cas'])
-        echo 'checked="checked"';
-    echo '">';
-    echo '<label>Administrator: </label><input type="checkbox" class="form-control" id="admin" name="admin"';
-    if ($user['admin'])
-        echo 'checked="checked"';
-    echo '">';
-
-
-    echo '<br><center><input type="submit" value="Submit" onclick="submitEditUser(' . $uid . ')"></center><br>';
 ?>
 
-<br>
-<center><a href="#" onclick="closePopup()">Close</a></center>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">View user</h4>
+        </div>
+        <div class="modal-body">
+            <?php
+                echo '<label>Name: </label><input type="text" class="form-control" disabled="disabled" id="name" name="name" value="' . $user['name'] . '">';
+                echo '<label>Email: </label><input type="text" class="form-control" disabled="disabled" id="email" name="email" value="' . $user['email'] . '">';
+                echo '<label>Phone: </label><input type="text" class="form-control" disabled="disabled" id="phone" name="phone" value="' . 'xxx' . '">';
+                echo '<br>';
+                echo '<div class="span7 text-center">';
+                echo '<button type="button" class="btn btn-warning" data-dismiss="modal" onclick="promoteUser(' . $uid . ')">Promote to admin</button>';
+                echo '</div>';
+            ?>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

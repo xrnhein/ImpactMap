@@ -19,7 +19,7 @@
 					<th class="col-xs-2">Time</th>
 					<th class="col-xs-2">Title</th>
 					<th class="col-xs-2">Status</th>
-					<th class="col-xs-2">Started</th>
+					<th class="col-xs-2">Start date</th>
 					<th class="col-xs-2">Summary</th>
 				</tr>
 			</thead>
@@ -52,11 +52,11 @@
 						if ($history[$i]['visible'] == 1)
 							echo "style='opacity: 0.2;'";
 						echo "></span></td>";
-						echo "<td class='col-xs-2' class='clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['time'] . " </td>";
-						echo "<td class='col-xs-2' class='clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['title'] . " </td>";
-						echo "<td class='col-xs-2' class='clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $STATUS[$history[$i]['status']] . " </td>";
-						echo "<td class='col-xs-2' class='clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['startDate'] . " </td>";
-						echo "<td class='col-xs-2' class='clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . substr($history[$i]['summary'], 0, 80) . "..." . " </td>";
+						echo "<td class='col-xs-2 clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['time'] . " </td>";
+						echo "<td class='col-xs-2 clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['title'] . " </td>";
+						echo "<td class='col-xs-2 clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $STATUS[$history[$i]['status']] . " </td>";
+						echo "<td class='col-xs-2 clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['startDate'] . " </td>";
+						echo "<td class='col-xs-2 clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . substr($history[$i]['summary'], 0, 80) . "..." . " </td>";
 						echo "</tr>";
 					}
 				?>

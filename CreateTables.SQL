@@ -24,8 +24,9 @@ CREATE TABLE Projects (
 
 CREATE TABLE History (
 	hid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	time TIMESTAMP,
-	deleted BOOLEAN,
+	edited TIMESTAMP,
+	deleted TIMESTAMP NOT NULL DEFAULT "3000-1-1 00:00:00",
+	editedBy uid,
 	pid INT UNSIGNED,
 	cid INT UNSIGNED,
 	title VARCHAR(100),
@@ -65,7 +66,11 @@ CREATE TABLE Contacts (
 CREATE TABLE Users (
 	uid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	email VARCHAR(64),
+	firstName VARCHAR(100),
+	lastName VARCHAR(100),
 	name VARCHAR(100),
+	phone VARCHAR(16),
 	password VARCHAR(64),
+	authenticated BOOLEAN,
 	root BOOLEAN
 );

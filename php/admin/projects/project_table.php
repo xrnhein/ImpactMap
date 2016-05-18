@@ -21,7 +21,7 @@
 					<th class="col-xs-1">Visible</th>
 					<th class="col-xs-3">Title</th>
 					<th class="col-xs-2">Status</th>
-					<th class="col-xs-2">Started</th>
+					<th class="col-xs-2">Start date</th>
 					<th class="col-xs-3">Summary</th>
 				</tr>
 			</thead>

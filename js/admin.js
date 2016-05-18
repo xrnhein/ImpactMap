@@ -78,16 +78,6 @@ function contentCallback(data) {
 	$("#content").html(data);
 }
 
-/**
-* A callback to deal specifically with the history table
-*
-* @param data The html content returned from the server
-*/
-function historyContentCallback(data) {
-    $("#content").html(data);
-    $("#datetimepicker").datetimepicker({format: 'Y-m-d H:i'});
-}
-
 /** 
 * Called when the dialog for adding/editing projects has been retrieved from the server and is ready to be shown
 *
@@ -112,9 +102,11 @@ function projectPopupCallback(data) {
 * @param data The html content returned from the server
 */
 function historyPopupCallback(data) {
-    $("#popup").html(data);
+    //$("#popup").html(data);
+    $("#impactModal").html(data);
+    $("#impactModal").modal('show');
     initMap(false);
-    $("#popup").scrollTop(0);
+    //$("#popup").scrollTop(0);
 }
 
 /**
@@ -257,7 +249,7 @@ function loadHistory() {
         type: "POST",
         url: "php/admin/history/history_table.php",
         data: {timestamp: ts},
-        success: historyContentCallback
+        success: contentCallback
     });
 }
 
@@ -267,7 +259,7 @@ function loadHistory() {
 * @param hid The id of the entry in the history table the user wishes to view
 */
 function viewHistory(hid) {
-    openPopup();
+    //openPopup();
     $.ajax({
         type: "POST",
         data: {hid: hid},
@@ -464,7 +456,7 @@ function loadUsers() {
 * @param uid The id of the user to edit, -1 if adding a user
 */
 function editUser(uid) {
-    openPopup();
+    //openPopup();
     $.ajax({
         type: "POST",
         data: {uid: uid},
