@@ -28,34 +28,36 @@ var davis = {lat: 38.5449, lng: -121.7405};
 */
 
 function initMap(draggable) {
+    if (position == null)
+        position = davis;
+
     projectPickerMap = new google.maps.Map($("#projectPickerMap").get(0), {
-        center: davis,
+        center: position,
         zoom: 8,
         disableDefaultUI: true
+    });
+
+    marker = new google.maps.Marker({
+        map: projectPickerMap,
+        position: position,
+        draggable: draggable,
+        title: "Drag me!"
     });
 
     projectPickerMap.setOptions({styles: [ { featureType: "road", stylers: [ { visibility: "off" } ] },{ } ]});
 
     geocoder = new google.maps.Geocoder();
-
-    if (position != null) {
-        marker = new google.maps.Marker({
-            map: projectPickerMap,
-            position: position,
-            draggable: draggable,
-            title: "Drag me!"
-        });
-    }
 }
 
 /**
 * Called when the web page is loaded. Currently it initializes the dialog windows.
 */
 $(document).ready( function() {
-	$("#popup").hide();
-    $("#bg").hide();
-    $("#bg").click(closePopup);
     loadProjects();
+    $('#impactModal').on('hidden.bs.modal', function () {
+        marker = null;
+        position = null;
+    })
 });
 
 function showDateTimePicker() {
@@ -85,9 +87,13 @@ function contentCallback(data) {
 */
 function projectPopupCallback(data) {
     //$("#popup").html(data);
+    $("#impactModal").on("shown.bs.modal", function () {
+        //google.maps.event.trigger(projectPickerMap, "resize");
+        initMap(true);
+    });
     $("#impactModal").html(data);
     $("#impactModal").modal('show');
-    initMap(true);
+    //initMap(true);
     $("#address").keyup(function() {
         geocoder.geocode({
             address: $("#address").val()
@@ -103,9 +109,13 @@ function projectPopupCallback(data) {
 */
 function historyPopupCallback(data) {
     //$("#popup").html(data);
+    $("#impactModal").on("shown.bs.modal", function () {
+        //google.maps.event.trigger(projectPickerMap, "resize");
+        initMap(false);
+    });
     $("#impactModal").html(data);
     $("#impactModal").modal('show');
-    initMap(false);
+    //initMap(false);
     //$("#popup").scrollTop(0);
 }
 
@@ -205,10 +215,10 @@ function submitEditProject(pid) {
                link: $("#link").val(),
                pic: $("#pic").val(),
                conid: $("#conid").val(),
-               fundedBy: "test",//$("#fundedBy").val(),
-               keyWords: "test",//$("#keyWords").val(),
+               fundedBy: $("#fundedBy").val(),
+               keywords: $("#keywords").val(),
                stemmedSearchText: searchWords.join(" "),
-               visible: 1,//$("#visible").val(),
+               visible: $("#visible").val(),
                lat: marker.getPosition().lat(),
                lng: marker.getPosition().lng()},
         data_type: "json",
@@ -217,24 +227,36 @@ function submitEditProject(pid) {
             loadProjects();
         }
     });
-    closePopup();
 }
 
 /**
 * Called by project_table.php when the user wishes to delete projects from the table. Jquery is used to get the project ids of all checked checkboxes, these ids are then sent to delete_projects.php for deletion
 */
-function deleteProjects() {
+function updateProjects(func) {
     var projects = $('.delete:checkbox:checked').map(function () {
         return this.id;
     }).get();
 
     $.ajax({
         type: "POST",
-        url: "php/admin/projects/delete_projects.php",
-        data: {data: JSON.stringify(projects)}, 
+        url: "php/admin/projects/update_projects.php",
+        data: {func: func,
+               data: JSON.stringify(projects)}, 
         success: function (data) {
             loadProjects();
         }
+    });
+}
+
+function selectAll() {
+    $('#content input:checkbox').each(function () {
+        $(this).prop('checked', true);
+    });
+}
+
+function unselectAll() {
+    $('#content input:checkbox').each(function () {
+        $(this).prop('checked', false);
     });
 }
 
@@ -346,7 +368,6 @@ function submitEditCenter(cid) {
             loadCenters();
         }
     });
-    closePopup();
 }
 
 /**
@@ -415,7 +436,6 @@ function submitEditContact(conid) {
             loadContacts();
         }
     });
-    closePopup();
 }
 
 /**
@@ -483,7 +503,6 @@ function submitEditUser(uid) {
             loadUsers();
         }
     });
-    closePopup();
 }
 
 /**
@@ -509,25 +528,6 @@ function changePassword() {
         url: "php/admin/change_password.php",
         success: popupCallback
     });
-}
-
-/**
-* Display the popup dialog
-*/
-function openPopup() {
-    $("#popup").show();
-    $("#bg").show();
-}
-
-/**
-* Hide the popup dialog
-*/
-function closePopup() {
-    $("#popup").hide();
-    $("#bg").hide();
-    $("#popup").html("");
-    marker = null;
-    position = null;
 }
 
 /**

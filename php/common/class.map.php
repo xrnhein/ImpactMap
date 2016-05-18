@@ -93,10 +93,10 @@ class Map {
      * @return bool
      */
     public function add_project() {
-      $sql = "INSERT INTO Projects(cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, lat, lng) 
-              VALUES (:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keyWords, :stemmedSearchText, :visible, :lat, :lng);
-              INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, deleted, lat, lng) 
-              VALUES ((SELECT MAX(pid) FROM Projects),:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keyWords, :stemmedSearchText, :visible, FALSE, :lat, :lng)";
+      $sql = "INSERT INTO Projects(cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keywords, stemmedSearchText, visible, lat, lng) 
+              VALUES (:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keywords, :stemmedSearchText, :visible, :lat, :lng);
+              INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keywords, stemmedSearchText, visible, deleted, lat, lng) 
+              VALUES ((SELECT MAX(pid) FROM Projects),:cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keywords, :stemmedSearchText, :visible, FALSE, :lat, :lng)";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> bindParam(":cid",               $_POST['cid'], PDO::PARAM_INT);
@@ -113,7 +113,7 @@ class Map {
           $stmt -> bindParam(":pic",              $_POST['pic'], PDO::PARAM_STR);
           $stmt -> bindParam(":conid",             $_POST['conid'], PDO::PARAM_INT);
           $stmt -> bindParam(":fundedBy",          $_POST['fundedBy'], PDO::PARAM_STR);
-          $stmt -> bindParam(":keyWords",          $_POST['keyWords'], PDO::PARAM_STR);
+          $stmt -> bindParam(":keywords",          $_POST['keywords'], PDO::PARAM_STR);
           $stmt -> bindParam(":stemmedSearchText", $_POST['stemmedSearchText'], PDO::PARAM_STR);
           $stmt -> bindParam(":visible",           $_POST['visible'], PDO::PARAM_BOOL);
           $stmt -> bindParam(":lat",               $_POST['lat'], PDO::PARAM_STR);
@@ -132,9 +132,9 @@ class Map {
     */
     public function update_project() {
         $sql = "UPDATE Projects SET cid = :cid, title = :title, status = :status, startDate = :startDate, endDate = :endDate, buildingName = :buildingName, address = :address, zip = :zip, type = :type, summary = :summary, 
-                                    link = :link, pic = :pic, conid = :conid, fundedBy = :fundedBy, keyWords = :keyWords, stemmedSearchText = :stemmedSearchText, visible = :visible, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
-                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, deleted, lat, lng) 
-                VALUES (:pid, :cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keyWords, :stemmedSearchText, :visible, FALSE, :lat, :lng)";
+                                    link = :link, pic = :pic, conid = :conid, fundedBy = :fundedBy, keywords = :keywords, stemmedSearchText = :stemmedSearchText, visible = :visible, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
+                INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keywords, stemmedSearchText, visible, deleted, lat, lng) 
+                VALUES (:pid, :cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :link, :pic, :conid, :fundedBy, :keywords, :stemmedSearchText, :visible, FALSE, :lat, :lng)";
 
         try {
             $stmt = $this->_db->prepare($sql);
@@ -153,7 +153,7 @@ class Map {
             $stmt -> bindParam(":pic",               $_POST['pic'], PDO::PARAM_STR);
             $stmt -> bindParam(":conid",              $_POST['conid'], PDO::PARAM_INT);
             $stmt -> bindParam(":fundedBy",          $_POST['fundedBy'], PDO::PARAM_STR);
-            $stmt -> bindParam(":keyWords",          $_POST['keyWords'], PDO::PARAM_STR);
+            $stmt -> bindParam(":keywords",          $_POST['keywords'], PDO::PARAM_STR);
             $stmt -> bindParam(":stemmedSearchText", $_POST['stemmedSearchText'], PDO::PARAM_STR);
             $stmt -> bindParam(":visible",           $_POST['visible'], PDO::PARAM_BOOL);
             $stmt -> bindParam(":lat",               $_POST['lat'], PDO::PARAM_STR);
@@ -187,10 +187,26 @@ class Map {
      */
     public function remove_project($pid) {
         $pid = intval($pid);
-        $sql = "DELETE FROM Projects WHERE pid=:pid LIMIT 1";
+        $sql = "DELETE FROM Projects WHERE pid=:pid LIMIT 1;
+                INSERT INTO History (pid, deleted) VALUES (:pid, TRUE);";
         try {
             $stmt = $this->_db->prepare($sql);
             $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
+            $stmt -> execute();
+            return TRUE;
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return FALSE;
+        }
+    }
+
+      public function set_project_visible($pid, $visible) {
+        $pid = intval($pid);
+        $sql = "UPDATE Projects SET visible = :visible WHERE pid = :pid LIMIT 1;";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
+            $stmt -> bindParam(":visible", $visible, PDO::PARAM_INT);
             $stmt -> execute();
             return TRUE;
         } catch(PDOException $e) {
@@ -226,7 +242,7 @@ class Map {
     public function load_history($filters = array()) {
       $results = NULL;
       $sql = "SELECT hid, time, lat, lng, title FROM History h1 WHERE h1.time =
-                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) 
+                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) AND h1.deleted = FALSE 
               ORDER BY h1.time DESC
               LIMIT :limit ";
       try {
@@ -257,7 +273,7 @@ class Map {
     */
     public function load_history_full($filters = array()) {
       $sql = "SELECT * FROM History h1 WHERE h1.time =
-                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) 
+                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) AND h1.deleted = FALSE 
               ORDER BY h1.time DESC LIMIT :limit";
       try {
           $stmt = $this->_db->prepare($sql);
@@ -301,11 +317,11 @@ class Map {
       $hid = intval($hid);
       $exists = "SELECT pid FROM Projects WHERE pid = (SELECT pid FROM History WHERE hid=:hid LIMIT 1) LIMIT 1";
       $insert = "INSERT INTO Projects
-                 SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, lat, lng 
-                 FROM History WHERE hid=:hid LIMIT 1";
+                 SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keywords, stemmedSearchText, visible, lat, lng 
+                 FROM History WHERE hid=:hid AND deleted=FALSE LIMIT 1";
       $update = "UPDATE Projects p, History h
-                 SET p.cid = h.cid, p.title = h.title, p.status = h.status, p.startDate = h.startDate, p.endDate = h.endDate, p.buildingName = h.buildingName, p.address = h.address, p.zip = h.zip, p.type = h.type, p.summary = h.summary, p.link = h.link, p.pic = h.pic, p.conid = h.conid, p.fundedBy = h.fundedBy, p.keyWords = h.keyWords, p.stemmedSearchText = h.stemmedSearchText, p.visible = h.visible, p.lat = h.lat, p.lng = h.lng
-                 WHERE p.pid = h.pid AND h.hid = :hid";
+                 SET p.cid = h.cid, p.title = h.title, p.status = h.status, p.startDate = h.startDate, p.endDate = h.endDate, p.buildingName = h.buildingName, p.address = h.address, p.zip = h.zip, p.type = h.type, p.summary = h.summary, p.link = h.link, p.pic = h.pic, p.conid = h.conid, p.fundedBy = h.fundedBy, p.keywords = h.keywords, p.stemmedSearchText = h.stemmedSearchText, p.visible = h.visible, p.lat = h.lat, p.lng = h.lng
+                 WHERE p.pid = h.pid AND h.hid = :hid AND h.deleted = FALSE";
       try {
           $stmt = $this->_db->prepare($exists);
           $stmt -> bindParam(":hid", $hid, PDO::PARAM_INT);
@@ -335,9 +351,9 @@ class Map {
       echo $timestamp;
       $sql = "DELETE FROM Projects;
               INSERT INTO Projects
-              SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keyWords, stemmedSearchText, visible, lat, lng 
+              SELECT pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, link, pic, conid, fundedBy, keywords, stemmedSearchText, visible, lat, lng 
               FROM History h1 WHERE h1.time =
-                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts)";
+                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) AND h1.deleted = FALSE";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> bindParam(":ts", $timestamp, PDO::PARAM_STR);

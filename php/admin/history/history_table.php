@@ -9,9 +9,10 @@
 								<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="#">Select all</a></li>
+								<li><a href="#" onclick="selectAll()">Select all</a></li>
+								<li><a href="#" onclick="unselectAll()">Unselect all</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="#">Restore</a></li>
+								<li><a href="#" onclick="restoreHistory()">Restore</a></li>
 							</ul>
 						</div>
 					</th>
@@ -49,8 +50,8 @@
 						echo "<tr>";
 						echo "<td class='col-xs-1'><input type='checkbox' class='delete' id='" . $history[$i]['hid'] . "'></td>";
 						echo "<td class='clickable col-xs-1' onclick=editProject(" . $history[$i]['hid'] . ")><span class='glyphicon glyphicon-eye-open' aria-hidden='true' ";
-						if ($history[$i]['visible'] == 1)
-							echo "style='opacity: 0.2;'";
+						if ($history[$i]['visible'] == FALSE)
+							echo "style='opacity: 0.1;'";
 						echo "></span></td>";
 						echo "<td class='col-xs-2 clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['time'] . " </td>";
 						echo "<td class='col-xs-2 clickable' onclick=viewHistory(" . $history[$i]['hid'] . ")> " . $history[$i]['title'] . " </td>";

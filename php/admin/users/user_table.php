@@ -9,14 +9,17 @@
 								<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="#">Select all</a></li>
+								<li><a href="#" onclick="selectAll()">Select all</a></li>
+								<li><a href="#" onclick="unselectAll()">Unselect all</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="#">Delete</a></li>
+								<li><a href="#" onclick="deleteUsers()">Delete</a></li>
 							</ul>
 						</div>
 					</th>
-					<th class="col-xs-4">Name</th>
-					<th class="col-xs-4">Email</th>
+					<th class="col-xs-1">Verified</th>
+					<th class="col-xs-2">First</th>
+					<th class="col-xs-2">Last</th>
+					<th class="col-xs-3">Email</th>
 					<th class="col-xs-3">Phone</th>
 				</tr>
 			</thead>
@@ -37,10 +40,17 @@
 
 					for ($i = 0; $i < count($users); $i++) {
 						echo "<tr>";
-						echo "<td class='col-xs-1'><input type='checkbox' class='delete' id='" . $users[$i]['uid'] . "'></td>";			
-						echo "<td class='col-xs-4 clickable' onclick=editUser(" . $users[$i]['uid'] . ")> " . $users[$i]['name'] . " </td>";
-						echo "<td class='col-xs-4 clickable' onclick=editUser(" . $users[$i]['uid'] . ")> " . $users[$i]['email'] . " </td>";
-						echo "<td class='col-xs-3 clickable' onclick=editUser(" . $users[$i]['uid'] . ")> " . "xxx" . " </td>";
+						echo "<td class='col-xs-1'><input type='checkbox' class='delete' id='" . $users[$i]['uid'] . "'></td>";	
+						echo "<td class='clickable col-xs-1' onclick=editUser(" . $users[$i]['uid'] . ")><span aria-hidden='true' ";
+						if ($users[$i]['authenticated'] == TRUE)
+							echo "class='glyphicon glyphicon-ok auth'";
+						else
+							echo "class='glyphicon glyphicon-remove notauth'";
+						echo "></span></td>";		
+						echo "<td class='col-xs-2 clickable' onclick=editUser(" . $users[$i]['uid'] . ")> " . $users[$i]['firstName'] . " </td>";
+						echo "<td class='col-xs-2 clickable' onclick=editUser(" . $users[$i]['uid'] . ")> " . $users[$i]['lastName'] . " </td>";
+						echo "<td class='col-xs-3 clickable' onclick=editUser(" . $users[$i]['uid'] . ")> " . $users[$i]['email'] . " </td>";
+						echo "<td class='col-xs-3 clickable' onclick=editUser(" . $users[$i]['uid'] . ")> " . $users[$i]['phone'] . " </td>";
 						echo "</tr>";
 					}
 				?>

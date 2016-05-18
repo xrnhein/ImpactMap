@@ -41,6 +41,17 @@
                 echo '<label>Contact: </label><select type="text" class="form-control" id="conid" name="conid" disabled="disabled">';
                 $contact = $map->load_contact($history['conid']);
                 echo "<option value='" . $contact['conid'] ."' selected='selected'>" . $contact['name'] . "</option></select>";
+                echo '<label>Funded by: </label><input type="text" class="form-control" id="fundedBy" name="fundedBy" value="' . $history['fundedBy'] . '" disabled="disabled">';
+                echo '<label>Keywords: </label><input type="text" class="form-control" id="keywords" name="keywords" value="' . $history['keywords'] . '" disabled="disabled">';
+                echo '<label>Visibility: </label><select type="text" class="form-control" id="visible" name="visible" disabled="disabled">';
+                if ($history['visible'] == 1) {
+                    echo "<option value='1' selected='selected'>Shown</option>";
+                    echo "<option value='0'>Hidden</option>";
+                } else {
+                    echo "<option value='1'>Shown</option>";
+                    echo "<option value='0' selected='selected'>Hidden</option>";
+                }
+                echo "</select>";
 
                 // Set the position of the marker on the map
                 if ($hid != -1)

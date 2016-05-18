@@ -68,8 +68,6 @@
 		  </div>
 		</nav>
 		<div id="content" class="container"></div>
-		<div id="popup" class="form-control"></div>
-		<div id="bg"></div>
 		<div id="impactModal" class="modal fade" tabindex="-1" role="dialog">
 		</div><!-- /.modal -->
 	</body>

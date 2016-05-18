@@ -9,9 +9,10 @@
 								<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="#">Select all</a></li>
+								<li><a href="#" onclick="selectAll()">Select all</a></li>
+								<li><a href="#" onclick="unselectAll()">Unselect all</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="#">Delete</a></li>
+								<li><a href="#" onclick="deleteCenters()">Delete</a></li>
 							</ul>
 						</div>
 					</th>

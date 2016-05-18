@@ -9,12 +9,13 @@
 								<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="#">Select all</a></li>
+								<li><a href="#" onclick="selectAll()">Select all</a></li>
+								<li><a href="#" onclick="unselectAll()">Unselect all</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="#">Hide</a></li>
-								<li><a href="#">Show</a></li>
+								<li><a href="#" onclick="updateProjects('hide')">Hide</a></li>
+								<li><a href="#" onclick="updateProjects('show')">Show</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="#">Delete</a></li>
+								<li><a href="#" onclick="updateProjects('delete')">Delete</a></li>
 							</ul>
 						</div>
 					</th>
@@ -43,8 +44,8 @@
 						echo "<tr>";
 						echo "<td class='col-xs-1'><input type='checkbox' class='delete' id='" . $projects[$i]['pid'] . "'></td>";
 						echo "<td class='clickable col-xs-1' onclick=editProject(" . $projects[$i]['pid'] . ")><span class='glyphicon glyphicon-eye-open' aria-hidden='true' ";
-						if ($projects[$i]['visible'] == 1)
-							echo "style='opacity: 0.2;'";
+						if ($projects[$i]['visible'] == FALSE)
+							echo "style='opacity: 0.1;'";
 						echo "></span></td>";
 						echo "<td class='clickable col-xs-3' onclick=editProject(" . $projects[$i]['pid'] . ")> " . $projects[$i]['title'] . " </td>";
 						echo "<td class='clickable col-xs-2' onclick=editProject(" . $projects[$i]['pid'] . ")> " . $STATUS[$projects[$i]['status']] . " </td>";

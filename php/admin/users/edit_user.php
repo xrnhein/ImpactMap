@@ -23,12 +23,19 @@
         </div>
         <div class="modal-body">
             <?php
-                echo '<label>Name: </label><input type="text" class="form-control" disabled="disabled" id="name" name="name" value="' . $user['name'] . '">';
+                echo '<label>First: </label><input type="text" class="form-control" disabled="disabled" id="firstName" name="firstName" value="' . $user['firstName'] . '">';
+                echo '<label>Last: </label><input type="text" class="form-control" disabled="disabled" id="lastName" name="lastName" value="' . $user['lastName'] . '">';
                 echo '<label>Email: </label><input type="text" class="form-control" disabled="disabled" id="email" name="email" value="' . $user['email'] . '">';
-                echo '<label>Phone: </label><input type="text" class="form-control" disabled="disabled" id="phone" name="phone" value="' . 'xxx' . '">';
+                echo '<label>Phone: </label><input type="text" class="form-control" disabled="disabled" id="phone" name="phone" value="' . $user['phone'] . '">';
                 echo '<br>';
                 echo '<div class="span7 text-center">';
-                echo '<button type="button" class="btn btn-warning" data-dismiss="modal" onclick="promoteUser(' . $uid . ')">Promote to admin</button>';
+                if ($user['authenticated'] == TRUE) {
+                    echo '<button type="button" class="btn btn-warning" data-dismiss="modal" onclick="promoteUser(' . $uid . ')">Promote to admin</button>';
+                } else {
+                    echo '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="authenticateUser(' . $uid . ')">Authenticate user</button>';
+                    echo '<h4>or</h4>';
+                    echo '<button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteeUser(' . $uid . ')">Delete user</button>';
+                }
                 echo '</div>';
             ?>
         </div>

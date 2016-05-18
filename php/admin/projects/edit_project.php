@@ -54,11 +54,23 @@
                         echo "selected='selected'";
                     echo ">" . $contacts[$i]['name'] . "</option>";
                 }
-                echo '</select>';
+                echo "</select>";
+                echo '<label>Funded by: </label><input type="text" class="form-control" id="fundedBy" name="fundedBy" value="' . $project['fundedBy'] . '">';
+                echo '<label>Keywords: </label><input type="text" class="form-control" id="keywords" name="keywords" value="' . $project['keywords'] . '">';
+                echo '<label>Visibility: </label><select type="text" class="form-control" id="visible" name="visible">';
+                if ($project['visible'] == 1) {
+                    echo "<option value='1' selected='selected'>Shown</option>";
+                    echo "<option value='0'>Hidden</option>";
+                } else {
+                    echo "<option value='1'>Shown</option>";
+                    echo "<option value='0' selected='selected'>Hidden</option>";
+                }
+                echo "</select>";
+
 
                 // If we're editing a project then set the position variable for javascript to display the position on the map
                 if ($pid != -1)
-                    echo '<script>position = new google.maps.LatLng(' . $project['lat'] . ', ' . $project['lng'] . ')</script>';
+                    echo '<script>position = new google.maps.LatLng(' . $project['lat'] . ', ' . $project['lng'] . ');</script>';
             ?>
         </div>
         <div class="modal-footer">

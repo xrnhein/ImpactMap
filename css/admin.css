@@ -1,9 +1,7 @@
 #projectPickerMap {
-	margin: 20px;
-	width: calc(100% - 150px);
+	margin: 20px 30px 20px 30px;
+	width: calc(100% - 60px);
 	height: 30%;
-	left: 50%;
-	transform: translateX(-50%);
 	border: 1px solid #cccccc;
 }
 
@@ -49,4 +47,12 @@
 .modal .modal-body {
 	max-height: calc(100vh - 200px);
 	overflow-y: auto;
+}
+
+.auth {
+  color: rgba(0, 153, 0, 0.8);
+}
+
+.notauth {
+  color: rgba(204, 0, 0, 0.8);
 }

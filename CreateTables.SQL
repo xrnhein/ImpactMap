@@ -16,7 +16,7 @@ CREATE TABLE Projects (
 	fundedBy VARCHAR(100),
 	keywords VARCHAR(100),
 	stemmedSearchText TEXT,
-	visible BOOLEAN,
+	visible BOOLEAN NOT NULL DEFAULT FALSE,
 	lat REAL,
 	lng REAL,
 	FULLTEXT(stemmedSearchText)
@@ -24,9 +24,9 @@ CREATE TABLE Projects (
 
 CREATE TABLE History (
 	hid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	edited TIMESTAMP,
-	deleted TIMESTAMP NOT NULL DEFAULT "3000-1-1 00:00:00",
-	editedBy uid,
+	time TIMESTAMP,
+	deleted BOOLEAN NOT NULL DEFAULT FALSE,
+	editedBy INT UNSIGNED,
 	pid INT UNSIGNED,
 	cid INT UNSIGNED,
 	title VARCHAR(100),
@@ -42,9 +42,9 @@ CREATE TABLE History (
 	pic VARCHAR(200),
 	conid INT UNSIGNED,
 	fundedBy VARCHAR(100),
-	keyWords VARCHAR(100),
+	keywords VARCHAR(100),
 	stemmedSearchText TEXT,
-	visible BOOLEAN,
+	visible BOOLEAN NOT NULL DEFAULT FALSE,
 	lat REAL,
 	lng REAL
 );
@@ -68,9 +68,8 @@ CREATE TABLE Users (
 	email VARCHAR(64),
 	firstName VARCHAR(100),
 	lastName VARCHAR(100),
-	name VARCHAR(100),
 	phone VARCHAR(16),
 	password VARCHAR(64),
-	authenticated BOOLEAN,
-	root BOOLEAN
+	authenticated BOOLEAN NOT NULL DEFAULT FALSE,
+	root BOOLEAN NOT NULL DEFAULT FALSE
 );
