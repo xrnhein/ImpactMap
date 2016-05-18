@@ -7,6 +7,15 @@
 	border: 1px solid #cccccc;
 }
 
+#timepickercontainer {
+  width: 308px;
+}
+
+#datetimepickerdropdown {
+  padding: 0px;
+  margin: 0px;
+}
+
 .navbar-brand {
 	padding: 6px;
 }
@@ -15,7 +24,7 @@
   width: 97%;
 }
 .table-fixed tbody {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 200px);
   overflow-y: auto;
   width: 100%;
 }

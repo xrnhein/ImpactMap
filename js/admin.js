@@ -58,6 +58,17 @@ $(document).ready( function() {
     loadProjects();
 });
 
+function showDateTimePicker() {
+    $("#datetimepicker").datetimepicker({
+        format: 'Y-m-d H:i',
+        inline: true,
+        onSelectTime:function(dp,$input){
+            loadHistory();
+            $('.dropdown.open .dropdown-toggle').dropdown('toggle');
+        }
+    });
+}
+
 /**
 * When a new admin page is loaded it fills the content area, this is the callback that handles that. The requests for new pages are sent in other functions using ajax.
 *
@@ -201,7 +212,7 @@ function submitEditProject(pid) {
                summary: $("#summary").val(),
                link: $("#link").val(),
                pic: $("#pic").val(),
-               conid: 1,//$("#conid").val(),
+               conid: $("#conid").val(),
                fundedBy: "test",//$("#fundedBy").val(),
                keyWords: "test",//$("#keyWords").val(),
                stemmedSearchText: searchWords.join(" "),
@@ -383,7 +394,7 @@ function loadContacts() {
 * @param conid The id of the contact to edit
 */
 function editContact(conid) {
-    openPopup();
+    //openPopup();
     $.ajax({
         type: "POST",
         data: {conid: conid},
@@ -501,6 +512,13 @@ function deleteUsers() {
     });
 }
 
+function changePassword() {
+    $.ajax({
+        url: "php/admin/change_password.php",
+        success: popupCallback
+    });
+}
+
 /**
 * Display the popup dialog
 */
@@ -523,12 +541,12 @@ function closePopup() {
 /**
 * Load the change password page from change_password.php
 */
-function changePassword() {
+function loadProfile() {
     $(".active").removeClass("active");
     $("#profile").addClass("active");
     $.ajax({
         type: "POST",
-        url: "php/admin/change_password.php",
+        url: "php/admin/profile.php",
         success: contentCallback
     });
 }

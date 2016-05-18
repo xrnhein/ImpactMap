@@ -84,7 +84,7 @@ class Map {
           return NULL;
       }
 
-      return $results;
+      return NULL;
   }
 
     /**
@@ -250,6 +250,30 @@ class Map {
 
       return $results;
   }
+
+      /**
+    * Load the most recent versions of each unique project up to the given timestamp from the History table, only returns a few select columns
+    *
+    */
+    public function load_history_full($filters = array()) {
+      $sql = "SELECT * FROM History h1 WHERE h1.time =
+                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) 
+              ORDER BY h1.time DESC LIMIT :limit";
+      try {
+          $stmt = $this->_db->prepare($sql);
+          $stmt -> bindParam(':limit', $filters['limit'], PDO::PARAM_INT);
+          $stmt -> bindParam(':ts', $filters['timestamp'], PDO::PARAM_STR);
+          $stmt -> execute();
+
+          return $stmt -> fetchAll();
+      } catch(PDOException $e) {
+          echo $e -> getMessage();
+          return NULL;
+      }
+
+      return NULL;
+  }
+
 
   /**
   * Return the all the columns of the history for a given history id (hid)

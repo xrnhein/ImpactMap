@@ -9,6 +9,8 @@
 								<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 							</button>
 							<ul class="dropdown-menu">
+								<li><a href="#">Select all</a></li>
+								<li role="separator" class="divider"></li>
 								<li><a href="#">Hide</a></li>
 								<li><a href="#">Show</a></li>
 								<li role="separator" class="divider"></li>

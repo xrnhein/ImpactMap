@@ -36,20 +36,28 @@
 				</a>
 		    </div>
 		    <div class="collapse navbar-collapse" id="impactNav">
-			    <ul class="nav navbar-nav">
-			    	<?php
-
+			    <ul class="nav navbar-nav"> 	
+					<li id="projects" class="active"><a href="#" onclick="loadProjects()">Projects</a></li>
+					<li id="centers"><a href="#" onclick="loadCenters()">Centers</a></li>
+					<li id="contacts"><a href="#" onclick="loadContacts()">Contacts</a></li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" onclick="showDateTimePicker()">History
+						<span class="caret"></span></a>
+						<ul id="datetimepickerdropdown" class="dropdown-menu">
+							<li>
+								<div id="timepickercontainer">
+									<input type="text" id="datetimepicker" class="form-control" value="">
+								</div>
+							</li>
+						</ul>
+					</li>
+					<?php
 						// This is just temporary until we have a database of users
 						$usertype = "admin";
-
-						echo '<li id="projects" class="active"><a href="#" onclick="loadProjects()">Projects</a></li>';
-						echo '<li id="centers"><a href="#" onclick="loadCenters()">Centers</a></li>';
-						echo '<li id="contacts"><a href="#" onclick="loadContacts()">Contacts</a></li>';
-						echo '<li id="history"><a href="#" onclick="loadHistory()">History</a></li>';
 						if ($usertype == "admin")
 							echo '<li id="users"><a href="#" onclick="loadUsers()">Users</a></li>';
-						echo '<li id="profile"><a href="#" onclick="changePassword()">Profile</a></li>';
 					?>
+					<li id="profile"><a href="#" onclick="loadProfile()">Profile</a></li>
 			    </ul>
 			    <?php
 			    	$username = "Testy McTestface";

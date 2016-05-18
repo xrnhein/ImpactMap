@@ -52,7 +52,7 @@
                     echo "<option value='" . $contacts[$i]['conid'] ."'";
                     if ($contacts[$i]['conid'] == $project['conid'])
                         echo "selected='selected'";
-                    echo ">" . $contacts[$i]['name'] . " (" . $contacts[$i]['email'] . ")</option>";
+                    echo ">" . $contacts[$i]['name'] . "</option>";
                 }
                 echo '</select>';
 
