@@ -74,7 +74,7 @@ class Map {
   *
   */
   public function load_projects_full() {
-      $sql = "SELECT * FROM Projects";
+      $sql = "SELECT * FROM Projects LEFT JOIN Centers ON Projects.cid=Centers.cid ORDER BY acronym ASC";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> execute();
@@ -272,9 +272,11 @@ class Map {
     *
     */
     public function load_history_full($filters = array()) {
-      $sql = "SELECT * FROM History h1 WHERE h1.time =
-                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) AND h1.deleted = FALSE 
-              ORDER BY h1.time DESC LIMIT :limit";
+      $sql = "SELECT * FROM (SELECT * FROM History h1 WHERE h1.time =
+                (SELECT max(time) FROM History h2 WHERE h2.pid = h1.pid AND h2.time <= :ts) AND h1.deleted = FALSE) h
+              LEFT JOIN Users ON h.editedBy = Users.uid
+              LEFT JOIN Centers ON h.cid = Centers.cid
+              ORDER BY acronym ASC LIMIT :limit";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> bindParam(':limit', $filters['limit'], PDO::PARAM_INT);

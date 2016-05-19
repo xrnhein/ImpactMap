@@ -40,7 +40,7 @@
 					<li id="projects" class="active"><a href="#" onclick="loadProjects()">Projects</a></li>
 					<li id="centers"><a href="#" onclick="loadCenters()">Centers</a></li>
 					<li id="contacts"><a href="#" onclick="loadContacts()">Contacts</a></li>
-					<li class="dropdown">
+					<li id="history" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" onclick="showDateTimePicker()">History
 						<span class="caret"></span></a>
 						<ul id="datetimepickerdropdown" class="dropdown-menu">
@@ -67,7 +67,7 @@
 			</div>
 		  </div>
 		</nav>
-		<div id="content" class="container"></div>
+		<div id="content" class="container-fluid"></div>
 		<div id="impactModal" class="modal fade" tabindex="-1" role="dialog">
 		</div><!-- /.modal -->
 	</body>

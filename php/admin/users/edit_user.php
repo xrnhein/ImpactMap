@@ -33,8 +33,6 @@
                     echo '<button type="button" class="btn btn-warning" data-dismiss="modal" onclick="promoteUser(' . $uid . ')">Promote to admin</button>';
                 } else {
                     echo '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="authenticateUser(' . $uid . ')">Authenticate user</button>';
-                    echo '<h4>or</h4>';
-                    echo '<button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteeUser(' . $uid . ')">Delete user</button>';
                 }
                 echo '</div>';
             ?>

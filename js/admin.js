@@ -523,9 +523,9 @@ function deleteUsers() {
     });
 }
 
-function changePassword() {
+function updateProfile() {
     $.ajax({
-        url: "php/admin/change_password.php",
+        url: "php/admin/update_profile.php",
         success: popupCallback
     });
 }

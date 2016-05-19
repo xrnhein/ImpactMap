@@ -35,7 +35,14 @@
                     echo ">" . $centers[$i]['name'] . " (" . $centers[$i]['acronym'] . ")</option>";
                 }
                 echo '</select>';
-                echo '<label>Status: </label><select type="text" class="form-control" id="status" name="status" value="' . $project['status'] . '"></select>';
+                echo '<label>Status: </label><select type="text" class="form-control" id="status" name="status">';
+                for ($i = 0; $i < count($STATUS); $i++) {
+                    echo "<option value='" . $i . "'";
+                    if ($i == $project['status'])
+                        echo "selected='selected'";
+                    echo ">" . $STATUS[$i] . "</option>";
+                }
+                echo "</select>";
                 echo '<label>Start Date: </label><input type="text" class="form-control" id="startDate" name="startDate" value="' . $project['startDate'] . '">';
                 echo '<label>End Date: </label><input type="text" class="form-control" id="endDate" name="endDate" value="' . $project['endDate'] . '">';
                 echo '<label>Building Name: </label><input type="text" class="form-control" id="buildingName" name="buildingName" value="' . $project['buildingName'] . '">';
