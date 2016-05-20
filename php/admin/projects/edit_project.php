@@ -23,8 +23,12 @@
             <h4 class="modal-title">Add/Edit Project</h4>
         </div>
         <div class="modal-body">
+            <div id="invalidInputWarning">
+            </div>
             <?php
+                echo '<div class="form-group" id="titleGroup">';
                 echo '<label>Title: </label><input type="text" class="form-control" id="title" name="title" value="' . $project['title'] . '">';
+                echo '</div>';
                 echo '<label>Center: </label><select type="text" class="form-control" id="cid" name="cid">';
                 // Populate the list of centers
                 $centers = $map->load_centers();
@@ -43,14 +47,22 @@
                     echo ">" . $STATUS[$i] . "</option>";
                 }
                 echo "</select>";
+                echo '<div class="form-group" id="startDateGroup">';
                 echo '<label>Start Date: </label><input type="text" class="form-control" id="startDate" name="startDate" value="' . $project['startDate'] . '">';
+                echo '</div>';
                 echo '<label>End Date: </label><input type="text" class="form-control" id="endDate" name="endDate" value="' . $project['endDate'] . '">';
                 echo '<label>Building Name: </label><input type="text" class="form-control" id="buildingName" name="buildingName" value="' . $project['buildingName'] . '">';
+                echo '<div class="form-group" id="addressGroup">';
                 echo '<label>Address: </label><input type="text" class="form-control" id="address" name="address" value="' . $project['address'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="zipGroup">';
                 echo '<label>Zip Code: </label><input type="text" class="form-control" id="zip" name="zip" value="' . $project['zip'] . '">';
+                echo '</div>';
                 echo '<div id="projectPickerMap"></div>';
                 echo '<label>Type: </label><select type="text" class="form-control" id="type" name="type" value="' . $project['type'] . '"></select>';
+                echo '<div class="form-group" id="summaryGroup">';
                 echo '<label>Summary: </label><textarea class="form-control" id="summary"  name="summary" rows="10">' . $project['summary'] . '</textarea>';
+                echo '</div>';
                 echo '<label>Link: </label><input type="text" class="form-control" id="link" name="link" value="' . $project['link'] . '">';
                 echo '<label>Picture: </label><input type="text" class="form-control" id="pic" name="pic" value="' . $project['pic'] . '">';
                 echo '<label>Contact: </label><select type="text" class="form-control" id="conid" name="conid">';
@@ -62,7 +74,9 @@
                     echo ">" . $contacts[$i]['name'] . "</option>";
                 }
                 echo "</select>";
+                echo '<div class="form-group" id="fundedByGroup">';
                 echo '<label>Funded by: </label><input type="text" class="form-control" id="fundedBy" name="fundedBy" value="' . $project['fundedBy'] . '">';
+                echo '</div>';
                 echo '<label>Keywords: </label><input type="text" class="form-control" id="keywords" name="keywords" value="' . $project['keywords'] . '">';
                 echo '<label>Visibility: </label><select type="text" class="form-control" id="visible" name="visible">';
                 if ($project['visible'] == 1) {
@@ -83,7 +97,7 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <?php
-                echo '<button type="button" class="btn btn-primary" onclick="submitEditProject(' . $pid . ')" data-dismiss="modal">Save changes</button>';
+                echo '<button type="button" class="btn btn-primary" onclick="submitEditProject(' . $pid . ')" >Save changes</button>';
             ?>
         </div>
     </div><!-- /.modal-content -->

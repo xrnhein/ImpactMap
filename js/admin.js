@@ -182,12 +182,87 @@ function editProject(pid) {
     });
 }
 
+function validateProjectData(){
+    var validInput = true;
+    var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
+
+    if ($("#title").val().length < 1) 
+    {
+        $("#titleGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Title</b> is less than the minimum length</li>");
+    }
+    
+    if($("#startDate").val().length < 1 || isValidDate($("#startDate").val()))
+    {
+        $("#startDateGroup").addClass("has-error");
+        validInput = false;
+        if($("#startDate").val().length < 1)
+            string = string.concat("<li><b>Start_Date</b> is less than the minimum length</li>");
+        if(isValidDate($("#startDate").val()))
+            string = string.concat("<li><b>Start_Date</b> is not a number</li>");
+    }
+
+    if($("#address").val().length < 1)
+    {
+        $("#addressGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Address</b> is less than the minimum length</li>");
+    }   
+
+    if($("#zip").val().length < 1)
+    {
+        $("#zipGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Zip</b> is less than the minimum length</li>");
+    }   
+
+    if($("#summary").val().length < 1)
+    {
+        $("#summaryGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Summary</b> is less than the minimum length</li>");
+    }
+
+    if($("#fundedBy").val().length < 1)
+    {    
+        $("#fundedByGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Funded_By</b> is less than the minimum length</li>");
+    }
+
+    string = string.concat("</ul></div>");
+
+    if (!validInput) {
+        $("#invalidInputWarning").html(string);
+
+        return false;
+    }
+    else
+        return true;
+
+
+}
+
+function isValidDate(date) {
+    if (Date.parse(date) == NaN)
+        return false;
+    else
+        return true;
+}
+
 /**
 * Called when a user is done making changes to a project and wishes to submit it. All the data is captured from the form and sent to submit_project_edit.php
 *
 * @param pid The id of the project being submitted
 */
 function submitEditProject(pid) {
+    //$("#impactModal").scrollTop(0);
+    //$("html, body").scrollTop($("#impactModal").offset().top);
+    //$(window).scrollTop(-15);
+    if (!validateProjectData())
+        return;
+
     // When a user submits a project certain fields are combined and then "stemmed", meaning the words are reduced to their roots (i.e. running -> run), and these are then stored as stemmedSearchText to be searched later
     var stemmer = new Snowball("english");
     var searchWords = ($("#title").val() + " " +  $("#buildingName").val() + " " + $("#address").val() + " " + $("#zip").val() + " " + $("#contactName").val()).split(" ");
@@ -227,6 +302,8 @@ function submitEditProject(pid) {
             loadProjects();
         }
     });
+
+    $("#impactModal").modal('hide');
 }
 
 /**
