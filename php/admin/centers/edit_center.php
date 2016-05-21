@@ -24,8 +24,13 @@
             <?php
                 echo '<label>Name: </label><input type="text" class="form-control" id="name" name="name" value="' . $center['name'] . '">';
                 echo '<label>Acronym: </label><input type="text" class="form-control" id="acronym" name="acronym" value="' . $center['acronym'] . '">';
-                echo '<label>Color: </label><input type="color" class="form-control" id="color" name="color" value="' . $center['color'] . '">';
             ?>
+            <label>Color: </label>
+            <div id="cp" class="input-group colorpicker-component">
+            <span class="input-group-addon"><i></i></span>
+                <input type="text" id="color" <?php echo 'value="' . $center['color'] . '"'?> class="form-control" /> 
+                 
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

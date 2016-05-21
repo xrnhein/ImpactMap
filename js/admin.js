@@ -130,6 +130,27 @@ function popupCallback(data) {
     $("#impactModal").modal('show');
 }
 
+function centerCallback(data) {
+    $("#impactModal").html(data);
+    $("#impactModal").modal('show');
+    $('#cp').colorpicker({
+        customClass: 'colorpicker-2x', 
+        sliders: {
+            saturation: {
+                maxLeft: 150,
+                maxTop: 150
+            },
+            hue: {
+                maxTop: 150
+            },
+            alpha: {
+                maxTop: 150
+            }
+        }
+    }); 
+
+}
+
 /**
 * Called when the google maps API has retrieved GPS coordinates for a given address and the map is ready to be updated
 *
@@ -186,49 +207,56 @@ function validateProjectData(){
     var validInput = true;
     var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
 
+    $("#titleGroup").removeClass("has-error");
+    $("#startDateGroup").removeClass("has-error");
+    $("#addressGroup").removeClass("has-error");
+    $("#zipGroup").removeClass("has-error");
+    $("#summaryGroup").removeClass("has-error");
+    $("#fundedByGroup").removeClass("has-error");
+
     if ($("#title").val().length < 1) 
     {
         $("#titleGroup").addClass("has-error");
         validInput = false;
-        string = string.concat("<li><b>Title</b> is less than the minimum length</li>");
+        string = string.concat("<li><b>Title</b> cannot be empty</li>");
     }
     
-    if($("#startDate").val().length < 1 || isValidDate($("#startDate").val()))
+    if($("#startDate").val().length < 1 || !isValidDate($("#startDate").val()))
     {
         $("#startDateGroup").addClass("has-error");
         validInput = false;
         if($("#startDate").val().length < 1)
-            string = string.concat("<li><b>Start_Date</b> is less than the minimum length</li>");
-        if(isValidDate($("#startDate").val()))
-            string = string.concat("<li><b>Start_Date</b> is not a number</li>");
+            string = string.concat("<li><b>Start Date</b> cannot be empty</li>");
+        if(!isValidDate($("#startDate").val()))
+            string = string.concat("<li><b>Start Date</b> is not a number</li>");
     }
 
     if($("#address").val().length < 1)
     {
         $("#addressGroup").addClass("has-error");
         validInput = false;
-        string = string.concat("<li><b>Address</b> is less than the minimum length</li>");
+        string = string.concat("<li><b>Address</b> cannot be empty</li>");
     }   
 
     if($("#zip").val().length < 1)
     {
         $("#zipGroup").addClass("has-error");
         validInput = false;
-        string = string.concat("<li><b>Zip</b> is less than the minimum length</li>");
+        string = string.concat("<li><b>Zip</b> cannot be empty</li>");
     }   
 
     if($("#summary").val().length < 1)
     {
         $("#summaryGroup").addClass("has-error");
         validInput = false;
-        string = string.concat("<li><b>Summary</b> is less than the minimum length</li>");
+        string = string.concat("<li><b>Summary</b> cannot be empty</li>");
     }
 
     if($("#fundedBy").val().length < 1)
     {    
         $("#fundedByGroup").addClass("has-error");
         validInput = false;
-        string = string.concat("<li><b>Funded_By</b> is less than the minimum length</li>");
+        string = string.concat("<li><b>Funded By</b> cannot be empty</li>");
     }
 
     string = string.concat("</ul></div>");
@@ -265,12 +293,13 @@ function submitEditProject(pid) {
 
     // When a user submits a project certain fields are combined and then "stemmed", meaning the words are reduced to their roots (i.e. running -> run), and these are then stored as stemmedSearchText to be searched later
     var stemmer = new Snowball("english");
-    var searchWords = ($("#title").val() + " " +  $("#buildingName").val() + " " + $("#address").val() + " " + $("#zip").val() + " " + $("#contactName").val()).split(" ");
+    var searchWords = ($("#title").val() + " " +  $("#buildingName").val() + " " + $("#address").val() + " " + $("#zip").val() + " " + $("#conid option:selected").text() + " " + $("#keywords").val()).split(/[,. ;\-:\\\/?+!]/);
     searchWords.forEach(function (word, i, words) {
         stemmer.setCurrent(word);
         stemmer.stem();
         words[i] = stemmer.getCurrent();
     });
+    console.log(searchWords);
 
     // Ajax request to submit the data to the server
     $.ajax({
@@ -423,7 +452,7 @@ function editCenter(cid) {
         data: {cid: cid},
         data_type: "json",
         url: "php/admin/centers/edit_center.php",
-        success: popupCallback
+        success: centerCallback
     });
 }
 

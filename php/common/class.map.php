@@ -735,7 +735,7 @@ class Map {
     * Search the Projects table for any projects whose stemmedSearchText column matches the give search text
     */
     public function search($searchPhrase) {
-        $sql = "SELECT title FROM Projects WHERE MATCH (stemmedSearchText) AGAINST (:searchPhrase IN BOOLEAN MODE) LIMIT 10";
+        $sql = "SELECT title FROM Projects WHERE MATCH (stemmedSearchText) AGAINST (:searchPhrase IN BOOLEAN MODE) AND visible = TRUE LIMIT 10";
         try {
             $stmt = $this->_db->prepare($sql);
             $stmt -> bindParam(":searchPhrase", $searchPhrase, PDO::PARAM_STR);
@@ -753,21 +753,36 @@ class Map {
     *
     */
     public function generate_prefetch() {
-      $sql = "SELECT title, buildingName, address, zip FROM Projects";
+      $sql = "SELECT title, buildingName, address, zip, name 
+              FROM (SELECT title, buildingName, address, zip, name, visible FROM Projects LEFT JOIN Contacts ON Projects.conid = Contacts.conid) p 
+              WHERE p.visible = TRUE";
       try {
           $stmt = $this->_db->prepare($sql);
           $stmt -> execute();
 
-          $file = fopen("../../../json/search.json", "w");
-          fwrite($file, "[");
+          $searchText = array();
           while ($row = $stmt->fetch()) {
             foreach ($row as $col) {
-              fwrite($file, '"');
-              fwrite($file, $col);
-              fwrite($file, '",');
+              if (strlen($col) > 0 && !in_array($col, $searchText))
+                $searchText[] = $col;
             }
           }
-          fwrite($file, '""]');
+
+          $file = fopen("../../../json/search.json", "w");
+          fwrite($file, "[");
+          $first = true;
+          for($i = 0; $i < count($searchText); $i++) {
+            if (!$first)
+              fwrite($file, ',');
+            else 
+              $first = false;
+
+            fwrite($file, '"');
+            fwrite($file, $searchText[$i]);
+            fwrite($file, '"');
+            
+          }
+          fwrite($file, ']');
           fclose($file);
       } catch(PDOException $e) {
           echo $e -> getMessage();

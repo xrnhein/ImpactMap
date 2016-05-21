@@ -56,3 +56,17 @@
 .notauth {
   color: rgba(204, 0, 0, 0.8);
 }
+
+.colorpicker-2x .colorpicker-saturation {
+    width: 150px;
+    height: 150px;
+}
+.colorpicker-2x .colorpicker-hue,
+.colorpicker-2x .colorpicker-alpha {
+    width: 22px;
+    height: 150px;
+}
+.colorpicker-2x .colorpicker-color,
+.colorpicker-2x .colorpicker-color div {
+    height: 22px;
+}

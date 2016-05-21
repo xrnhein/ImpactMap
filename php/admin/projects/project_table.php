@@ -60,6 +60,4 @@
 </div>
 <div class="span7 text-center">
 	<button type="button" class="btn btn-primary" onclick="editProject(-1)">Add a project</button>
-	<button type="button" class="btn btn-default">Import .csv</button>
-	<button type="button" class="btn btn-default">Export .csv</button>
 </div>

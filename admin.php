@@ -15,6 +15,9 @@
 
 		<script src="lib/snowball_stemmer/Snowball.min.js"></script>
 
+		<script src="lib/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+		<link rel="stylesheet" href="lib/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+
 		<link rel="stylesheet" href="css/admin.css">
 		<link rel="stylesheet" href="css/project_table.css">
 
@@ -31,7 +34,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">
+				<a class="navbar-brand" href="index.htm">
 					<img alt="Brand" src="img/brand.png" height="40px" width="40px">
 				</a>
 		    </div>
