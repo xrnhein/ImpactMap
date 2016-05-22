@@ -1,3 +1,7 @@
+<?php
+	require_once "../../common/dbConnect.php";
+	require_once "../../common/class.map.php";
+?>
 <div class="row">
 	<div class="panel panel-default">
 		<table class="table table-hover table-fixed">
@@ -33,8 +37,8 @@
 					* pid is the id of that project.
 					*/
 
-					require_once "../../common/dbConnect.php";
-					require_once "../../common/class.map.php";
+					//require_once "../../common/dbConnect.php";
+					//require_once "../../common/class.map.php";
 
 					$map = new Map();
 
@@ -61,5 +65,5 @@
 <div class="span7 text-center">
 	<button type="button" class="btn btn-primary" onclick="editProject(-1)">Add a project</button>
 	<button type="button" class="btn btn-default">Import .csv</button>
-	<button type="button" class="btn btn-default">Export .csv</button>
+	<button type="button" class="btn btn-default" onclick="exportProject()"">Export .csv</button>
 </div>
