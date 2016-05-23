@@ -10,6 +10,7 @@ CREATE TABLE Projects (
 	zip VARCHAR(6),
 	type int,
 	summary TEXT,
+	results TEXT,
 	link VARCHAR(200),
 	pic VARCHAR(200),
 	conid INT UNSIGNED,
@@ -24,8 +25,8 @@ CREATE TABLE Projects (
 
 CREATE TABLE History (
 	hid INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	time TIMESTAMP,
-	deleted BOOLEAN NOT NULL DEFAULT FALSE,
+	time TIMESTAMP NOT NULL DEFAULT NOW(),
+	deleted TIMESTAMP NOT NULL DEFAULT '2038-01-01 00:00:00',
 	editedBy INT UNSIGNED,
 	pid INT UNSIGNED,
 	cid INT UNSIGNED,
@@ -38,6 +39,7 @@ CREATE TABLE History (
 	zip VARCHAR(6),
 	type int,
 	summary TEXT,
+	results TEXT,
 	link VARCHAR(200),
 	pic VARCHAR(200),
 	conid INT UNSIGNED,

@@ -212,7 +212,10 @@ function validateProjectData(){
     $("#addressGroup").removeClass("has-error");
     $("#zipGroup").removeClass("has-error");
     $("#summaryGroup").removeClass("has-error");
+    $("#resultsGroup").removeClass("has-error");
     $("#fundedByGroup").removeClass("has-error");
+
+    var dateRegex = /^(20[0-9]{2})-([1-9]{1}|1[1-2]{1})-([1-9]{1}|[1-3]{1}[1-9]{1})$/;
 
     if ($("#title").val().length < 1) 
     {
@@ -221,14 +224,14 @@ function validateProjectData(){
         string = string.concat("<li><b>Title</b> cannot be empty</li>");
     }
     
-    if($("#startDate").val().length < 1 || !isValidDate($("#startDate").val()))
+    if($("#startDate").val().length < 1 || !dateRegex.test($("#startDate").val()))
     {
         $("#startDateGroup").addClass("has-error");
         validInput = false;
         if($("#startDate").val().length < 1)
             string = string.concat("<li><b>Start Date</b> cannot be empty</li>");
-        if(!isValidDate($("#startDate").val()))
-            string = string.concat("<li><b>Start Date</b> is not a number</li>");
+        else
+            string = string.concat("<li><b>Start Date</b> must of of the form yyyy-mm-dd</li>");
     }
 
     if($("#address").val().length < 1)
@@ -250,6 +253,13 @@ function validateProjectData(){
         $("#summaryGroup").addClass("has-error");
         validInput = false;
         string = string.concat("<li><b>Summary</b> cannot be empty</li>");
+    }
+
+    if($("#results").val().length < 1)
+    {
+        $("#resultsGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>results</b> cannot be empty</li>");
     }
 
     if($("#fundedBy").val().length < 1)
@@ -316,6 +326,7 @@ function submitEditProject(pid) {
                zip: $("#zip").val(),
                type: $("#type").val(),
                summary: $("#summary").val(),
+               results: $("#results").val(),
                link: $("#link").val(),
                pic: $("#pic").val(),
                conid: $("#conid").val(),
@@ -349,6 +360,7 @@ function updateProjects(func) {
         data: {func: func,
                data: JSON.stringify(projects)}, 
         success: function (data) {
+            console.log(data);
             loadProjects();
         }
     });
@@ -462,6 +474,9 @@ function editCenter(cid) {
 * @param cid The id of the center to edit
 */
 function submitEditCenter(cid) {
+    if (!validateCenterData())
+        return;
+
     $.ajax({
         type: "POST",
         url: "php/admin/centers/submit_center_edit.php",
@@ -474,6 +489,43 @@ function submitEditCenter(cid) {
             loadCenters();
         }
     });
+
+    $("#impactModal").modal('hide');
+}
+
+function validateCenterData(){
+    var validInput = true;
+    var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
+
+    $("#nameGroup").removeClass("has-error");
+    $("#acronymGroup").removeClass("has-error");
+
+    if ($("#name").val().length < 1) 
+    {
+        $("#nameGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Name</b> cannot be empty</li>");
+    }
+    
+    if ($("#acronym").val().length < 2) 
+    {
+        $("#acronymGroup").addClass("has-error");
+        validInput = false;
+        if ($("#acronym").val().length < 1)
+            string = string.concat("<li><b>Acronym</b> cannot be empty</li>");
+        else
+            string = string.concat("<li><b>Acronym</b> is too short</li>"); 
+    }
+
+    string = string.concat("</ul></div>");
+
+    if (!validInput) {
+        $("#invalidInputWarning").html(string);
+
+        return false;
+    }
+    else
+        return true;
 }
 
 /**
@@ -529,6 +581,10 @@ function editContact(conid) {
 * @param conid The id of the contact to edit
 */
 function submitEditContact(conid) {
+    if (!validateContactData())
+        return;
+
+
     console.log('test');
     $.ajax({
         type: "POST",
@@ -542,6 +598,48 @@ function submitEditContact(conid) {
             loadContacts();
         }
     });
+
+    $("#impactModal").modal('hide');
+}
+
+function validateContactData(){
+    var validInput = true;
+    var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
+
+    $("#nameGroup").removeClass("has-error");
+    $("#emailGroup").removeClass("has-error");
+    $("#phoneGroup").removeClass("has-error");
+
+    if ($("#name").val().length < 1) 
+    {
+        $("#nameGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Name</b> cannot be empty</li>");
+    }
+    
+    if ($("#email").val().length < 1) 
+    {
+        $("#emailGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Email</b> cannot be empty</li>");
+    }
+
+    if ($("#phone").val().length < 1) 
+    {
+        $("#phoneGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Phone</b> cannot be empty</li>");
+    }
+
+    string = string.concat("</ul></div>");
+
+    if (!validInput) {
+        $("#invalidInputWarning").html(string);
+
+        return false;
+    }
+    else
+        return true;
 }
 
 /**

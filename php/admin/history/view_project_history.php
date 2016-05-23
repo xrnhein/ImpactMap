@@ -38,6 +38,7 @@
                 echo '<div id="projectPickerMap"></div>';
                 echo '<label>Type: </label><select type="text" class="form-control" id="type" name="type" disabled="disabled" value="' . $history['type'] . '"></select>';
                 echo '<label>Summary: </label><textarea class="form-control" id="summary"  name="summary" rows="10" disabled="disabled">' . $history['summary'] . '</textarea>';
+                echo '<label>Results: </label><textarea class="form-control" id="results"  name="results" rows="10" disabled="disabled">' . $history['results'] . '</textarea>';
                 echo '<label>Link: </label><input type="text" class="form-control" id="link" name="link" value="' . $history['link'] . '" disabled="disabled">';
                 echo '<label>Picture: </label><input type="text" class="form-control" id="pic" name="pic" value="' . $history['pic'] . '" disabled="disabled">';
                 echo '<label>Contact: </label><select type="text" class="form-control" id="conid" name="conid" disabled="disabled">';

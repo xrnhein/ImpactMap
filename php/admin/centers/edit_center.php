@@ -21,9 +21,15 @@
             <h4 class="modal-title">Add/Edit Center</h4>
         </div>
         <div class="modal-body">
+            <div id="invalidInputWarning">
+            </div>
             <?php
+                echo '<div class="form-group" id="nameGroup">';
                 echo '<label>Name: </label><input type="text" class="form-control" id="name" name="name" value="' . $center['name'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="acronymGroup">';
                 echo '<label>Acronym: </label><input type="text" class="form-control" id="acronym" name="acronym" value="' . $center['acronym'] . '">';
+                echo '</div>';
             ?>
             <label>Color: </label>
             <div id="cp" class="input-group colorpicker-component">
@@ -35,7 +41,7 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <?php
-                echo '<button type="button" class="btn btn-primary" onclick="submitEditCenter(' . $cid . ')" data-dismiss="modal">Save changes</button>';
+                echo '<button type="button" class="btn btn-primary" onclick="submitEditCenter(' . $cid . ')">Save changes</button>';
             ?>
         </div>
     </div><!-- /.modal-content -->
