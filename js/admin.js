@@ -1,8 +1,8 @@
+
 /*
     This file allows admins to interact with the system to add or edit projects,
     centers, project managers, or other users of the system (Only the root user
     can do this).
-
     It utlizies JQuery to make AJAX requests for PHP files from the server to
     update the information displayed on the page. These functions are called
     by the other PHP files that make up the admin pages.
@@ -77,7 +77,7 @@ function showDateTimePicker() {
 * @param data The html content returned from the server
 */
 function contentCallback(data) {
-	$("#content").html(data);
+    $("#content").html(data);
 }
 
 /** 
@@ -128,6 +128,27 @@ function popupCallback(data) {
     //$("#popup").html(data);
     $("#impactModal").html(data);
     $("#impactModal").modal('show');
+}
+
+function centerCallback(data) {
+    $("#impactModal").html(data);
+    $("#impactModal").modal('show');
+    $('#cp').colorpicker({
+        customClass: 'colorpicker-2x', 
+        sliders: {
+            saturation: {
+                maxLeft: 150,
+                maxTop: 150
+            },
+            hue: {
+                maxTop: 150
+            },
+            alpha: {
+                maxTop: 150
+            }
+        }
+    }); 
+
 }
 
 /**
@@ -182,20 +203,103 @@ function editProject(pid) {
     });
 }
 
+function validateProjectData(){
+    var validInput = true;
+    var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
+
+    $("#titleGroup").removeClass("has-error");
+    $("#startDateGroup").removeClass("has-error");
+    $("#addressGroup").removeClass("has-error");
+    $("#zipGroup").removeClass("has-error");
+    $("#summaryGroup").removeClass("has-error");
+    $("#fundedByGroup").removeClass("has-error");
+
+    if ($("#title").val().length < 1) 
+    {
+        $("#titleGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Title</b> cannot be empty</li>");
+    }
+    
+    if($("#startDate").val().length < 1 || !isValidDate($("#startDate").val()))
+    {
+        $("#startDateGroup").addClass("has-error");
+        validInput = false;
+        if($("#startDate").val().length < 1)
+            string = string.concat("<li><b>Start Date</b> cannot be empty</li>");
+        if(!isValidDate($("#startDate").val()))
+            string = string.concat("<li><b>Start Date</b> is not a number</li>");
+    }
+
+    if($("#address").val().length < 1)
+    {
+        $("#addressGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Address</b> cannot be empty</li>");
+    }   
+
+    if($("#zip").val().length < 1)
+    {
+        $("#zipGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Zip</b> cannot be empty</li>");
+    }   
+
+    if($("#summary").val().length < 1)
+    {
+        $("#summaryGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Summary</b> cannot be empty</li>");
+    }
+
+    if($("#fundedBy").val().length < 1)
+    {    
+        $("#fundedByGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Funded By</b> cannot be empty</li>");
+    }
+
+    string = string.concat("</ul></div>");
+
+    if (!validInput) {
+        $("#invalidInputWarning").html(string);
+
+        return false;
+    }
+    else
+        return true;
+
+
+}
+
+function isValidDate(date) {
+    if (Date.parse(date) == NaN)
+        return false;
+    else
+        return true;
+}
+
 /**
 * Called when a user is done making changes to a project and wishes to submit it. All the data is captured from the form and sent to submit_project_edit.php
 *
 * @param pid The id of the project being submitted
 */
 function submitEditProject(pid) {
+    //$("#impactModal").scrollTop(0);
+    //$("html, body").scrollTop($("#impactModal").offset().top);
+    //$(window).scrollTop(-15);
+    if (!validateProjectData())
+        return;
+
     // When a user submits a project certain fields are combined and then "stemmed", meaning the words are reduced to their roots (i.e. running -> run), and these are then stored as stemmedSearchText to be searched later
     var stemmer = new Snowball("english");
-    var searchWords = ($("#title").val() + " " +  $("#buildingName").val() + " " + $("#address").val() + " " + $("#zip").val() + " " + $("#contactName").val()).split(" ");
+    var searchWords = ($("#title").val() + " " +  $("#buildingName").val() + " " + $("#address").val() + " " + $("#zip").val() + " " + $("#conid option:selected").text() + " " + $("#keywords").val()).split(/[,. ;\-:\\\/?+!]/);
     searchWords.forEach(function (word, i, words) {
         stemmer.setCurrent(word);
         stemmer.stem();
         words[i] = stemmer.getCurrent();
     });
+    console.log(searchWords);
 
     // Ajax request to submit the data to the server
     $.ajax({
@@ -227,6 +331,8 @@ function submitEditProject(pid) {
             loadProjects();
         }
     });
+
+    $("#impactModal").modal('hide');
 }
 
 /**
@@ -335,6 +441,41 @@ function loadCenters() {
     });
 }
 
+function validateCenterData(){
+    var validInput = true;
+    var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
+
+    $("#nameGroup").removeClass("has-error");
+    $("#acronymGroup").removeClass("has-error");
+
+    if ($("#name").val().length < 1) 
+    {
+        $("#nameGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Name</b> cannot be empty</li>");
+    }
+    
+    if ($("#acronym").val().length < 2) 
+    {
+        $("#acronymGroup").addClass("has-error");
+        validInput = false;
+        if ($("#acronym").val().length < 1)
+            string = string.concat("<li><b>Acronym</b> cannot be empty</li>");
+        else
+            string = string.concat("<li><b>Acronym</b> is too short</li>"); 
+    }
+
+    string = string.concat("</ul></div>");
+
+    if (!validInput) {
+        $("#invalidInputWarning").html(string);
+
+        return false;
+    }
+    else
+        return true;
+}
+
 /**
 * Called from center_table.php when a user clicks on a center in the list or add center. The popup dialog is opened and populated with data from edit_center.php
 *
@@ -346,7 +487,7 @@ function editCenter(cid) {
         data: {cid: cid},
         data_type: "json",
         url: "php/admin/centers/edit_center.php",
-        success: popupCallback
+        success: centerCallback
     });
 }
 
@@ -399,6 +540,46 @@ function loadContacts() {
         url: "php/admin/contacts/contact_table.php",
         success: contentCallback
     });
+}
+
+function validateContactData(){
+    var validInput = true;
+    var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
+
+    $("#nameGroup").removeClass("has-error");
+    $("#emailGroup").removeClass("has-error");
+    $("#phoneGroup").removeClass("has-error");
+
+    if ($("#name").val().length < 1) 
+    {
+        $("#nameGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Name</b> cannot be empty</li>");
+    }
+    
+    if ($("#email").val().length < 1) 
+    {
+        $("#emailGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Email</b> cannot be empty</li>");
+    }
+
+    if ($("#phone").val().length < 1) 
+    {
+        $("#phoneGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Phone</b> cannot be empty</li>");
+    }
+
+    string = string.concat("</ul></div>");
+
+    if (!validInput) {
+        $("#invalidInputWarning").html(string);
+
+        return false;
+    }
+    else
+        return true;
 }
 
 /**
@@ -470,6 +651,53 @@ function loadUsers() {
     });
 }
 
+function validateUserData(){
+    var validInput = true;
+    var string = "<div class='alert alert-danger'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>Invalid input:<br><ul> ";
+
+    $("#nameGroup").removeClass("has-error");
+    $("#emailGroup").removeClass("has-error");
+    $("#phoneGroup").removeClass("has-error");
+
+    if ($("#firstName").val().length < 1) 
+    {
+        $("#firstNameGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>First_Name</b> cannot be empty</li>");
+    }
+    
+    if ($("#lastName").val().length < 1) 
+    {
+        $("#lastNameGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Last_Name</b> cannot be empty</li>");
+    }
+
+    if ($("#email").val().length < 1) 
+    {
+        $("#emailGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Email</b> cannot be empty</li>");
+    }
+
+    if ($("#phone").val().length < 1) 
+    {
+        $("#phoneGroup").addClass("has-error");
+        validInput = false;
+        string = string.concat("<li><b>Phone</b> cannot be empty</li>");
+    }
+
+    string = string.concat("</ul></div>");
+
+    if (!validInput) {
+        $("#invalidInputWarning").html(string);
+
+        return false;
+    }
+    else
+        return true;
+}
+
 /** 
 * Called from the user table when the root user clicks on an entry in the table or clicks add user, the popup dialog is loaded with content from edit_user.php
 *
@@ -523,9 +751,9 @@ function deleteUsers() {
     });
 }
 
-function changePassword() {
+function updateProfile() {
     $.ajax({
-        url: "php/admin/change_password.php",
+        url: "php/admin/update_profile.php",
         success: popupCallback
     });
 }

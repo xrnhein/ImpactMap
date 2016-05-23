@@ -18,13 +18,21 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Add/Edit Center</h4>
+            <h4 class="modal-title">Add/Edit Contact</h4>
         </div>
         <div class="modal-body">
+            <div id="invalidInputWarning">
+            </div>
             <?php
+                echo '<div class="form-group" id="nameGroup">';
                 echo '<label>Name: </label><input type="text" class="form-control" id="name" name="name" value="' . $contact['name'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="emailGroup">';
                 echo '<label>Email: </label><input type="text" class="form-control" id="email" name="email" value="' . $contact['email'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="phoneGroup">';
                 echo '<label>Phone: </label><input type="text" class="form-control" id="phone" name="phone" value="' . $contact['phone'] . '">';
+                echo '</div>';
             ?>
         </div>
         <div class="modal-footer">

@@ -26,6 +26,49 @@ class Map {
         }
     }
 
+/**
+  * Add a user to the User table, data comes from POST
+  *
+  */
+  public function insert_user($fname, $lname, $phone, $email, $password) {
+    
+    $sql = "INSERT INTO users(email, firstName, lastName, phone, authenticated, password, root, admin) 
+            VALUES (:email, :fname, :lname, :phone, '0', :password, '0', '0')";
+    try {
+        $stmt = $this->_db->prepare($sql);
+        $stmt -> bindParam(":fname", $fname, PDO::PARAM_STR);
+        $stmt -> bindParam(":lname", $lname, PDO::PARAM_STR);
+        $stmt -> bindParam(":phone", $phone, PDO::PARAM_STR);
+        $stmt -> bindParam(":email", $email, PDO::PARAM_STR);
+        $stmt -> bindParam(":password", $password, PDO::PARAM_STR);
+        $stmt -> execute();
+        return TRUE;
+    } catch(PDOException $e) {
+        echo $e -> getMessage();
+        return FALSE;
+    }
+  }
+
+/**
+  * Return the details of a specific user for login
+  *
+  */
+  public function login_user($email) {
+        
+        $sql = "SELECT * FROM users WHERE email=:email LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":email", $email, PDO::PARAM_STR);
+            $stmt -> execute();
+            return $stmt -> fetch();
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return NULL;
+        }
+  }
+
+
+
     /**
     * Load all projects that meet the filter requirements. 
     *

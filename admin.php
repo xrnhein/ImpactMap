@@ -15,6 +15,9 @@
 
 		<script src="lib/snowball_stemmer/Snowball.min.js"></script>
 
+		<script src="lib/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+		<link rel="stylesheet" href="lib/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+
 		<link rel="stylesheet" href="css/admin.css">
 		<link rel="stylesheet" href="css/project_table.css">
 
@@ -31,7 +34,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">
+				<a class="navbar-brand" href="index.htm">
 					<img alt="Brand" src="img/brand.png" height="40px" width="40px">
 				</a>
 		    </div>
@@ -40,7 +43,7 @@
 					<li id="projects" class="active"><a href="#" onclick="loadProjects()">Projects</a></li>
 					<li id="centers"><a href="#" onclick="loadCenters()">Centers</a></li>
 					<li id="contacts"><a href="#" onclick="loadContacts()">Contacts</a></li>
-					<li class="dropdown">
+					<li id="history" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" onclick="showDateTimePicker()">History
 						<span class="caret"></span></a>
 						<ul id="datetimepickerdropdown" class="dropdown-menu">
@@ -53,21 +56,38 @@
 					</li>
 					<?php
 						// This is just temporary until we have a database of users
-						$usertype = "admin";
-						if ($usertype == "admin")
+						//$usertype = "admin";
+						require_once $_SERVER['DOCUMENT_ROOT'] . "/ImpactMap/php/common/class.map.php";
+
+						session_start();
+		
+						$map = new Map();
+						$row = $map -> login_user($_SESSION['user_email']);
+						$usertype = $row['admin'];
+
+						if ($usertype)
 							echo '<li id="users"><a href="#" onclick="loadUsers()">Users</a></li>';
 					?>
 					<li id="profile"><a href="#" onclick="loadProfile()">Profile</a></li>
 			    </ul>
 			    <?php
-			    	$username = "Testy McTestface";
+			    	//$username = "Testy McTestface";
+			    	  //session_start();
 
-			    	echo '<p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">' . $username . '</a></p>';
+					  if(!isset($_SESSION['logged_in']))
+					  {
+					  	header("Location: login.php");
+					  }
+			    	  $fname = $_SESSION["logged_in"];
+			    	  $lname = $_SESSION["logged_in2"];
+
+			    	echo '<p class="navbar-text navbar-right"><a href="logout.php" onclick="return confirm(\'Are you sure you wish to logout?\')" class="navbar-link">Logout</a></p>
+			    		  <p class="navbar-text navbar-right">Signed in as ' . $fname . ' ' . $lname . '</p>';
 			    ?>
 			</div>
 		  </div>
 		</nav>
-		<div id="content" class="container"></div>
+		<div id="content" class="container-fluid"></div>
 		<div id="impactModal" class="modal fade" tabindex="-1" role="dialog">
 		</div><!-- /.modal -->
 	</body>

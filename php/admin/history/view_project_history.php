@@ -27,7 +27,9 @@
                 echo '<label>Center: </label><select type="text" class="form-control" id="cid" name="cid" disabled="disabled">';
                 $center = $map->load_center($history['cid']);
                 echo "<option value='" . $center['cid'] ."' selected='selected'>" . $center['name'] . " (" . $center['acronym'] . ")</option></select>";
-                echo '<label>Status: </label><select type="text" class="form-control" id="status" name="status" disabled="disabled" value="' . $history['status'] . '"></select>';
+                echo '<label>Status: </label><select type="text" class="form-control" id="status" name="status" disabled="disabled">';
+                echo "<option value='" . $i . "' selected='selected'>" . $STATUS[$history['status']] . "</option>";
+                echo "</select>";
                 echo '<label>Start Date: </label><input type="text" class="form-control" id="startDate" name="startDate" value="' . $history['startDate'] . '" disabled="disabled">';
                 echo '<label>End Date: </label><input type="text" class="form-control" id="endDate" name="endDate" value="' . $history['endDate'] . '" disabled="disabled">';
                 echo '<label>Building Name: </label><input type="text" class="form-control" id="buildingName" name="buildingName" value="' . $history['buildingName'] . '" disabled="disabled">';

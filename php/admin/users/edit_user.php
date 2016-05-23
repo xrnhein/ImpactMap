@@ -22,19 +22,27 @@
             <h4 class="modal-title">View user</h4>
         </div>
         <div class="modal-body">
+            <div id="invalidInputWarning">
+            </div>
             <?php
+                echo '<div class="form-group" id="firstNameGroup">';
                 echo '<label>First: </label><input type="text" class="form-control" disabled="disabled" id="firstName" name="firstName" value="' . $user['firstName'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="lastNameGroup">';
                 echo '<label>Last: </label><input type="text" class="form-control" disabled="disabled" id="lastName" name="lastName" value="' . $user['lastName'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="emailGroup">';
                 echo '<label>Email: </label><input type="text" class="form-control" disabled="disabled" id="email" name="email" value="' . $user['email'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="phoneGroup">';
                 echo '<label>Phone: </label><input type="text" class="form-control" disabled="disabled" id="phone" name="phone" value="' . $user['phone'] . '">';
+                echo '</div>';
                 echo '<br>';
                 echo '<div class="span7 text-center">';
                 if ($user['authenticated'] == TRUE) {
                     echo '<button type="button" class="btn btn-warning" data-dismiss="modal" onclick="promoteUser(' . $uid . ')">Promote to admin</button>';
                 } else {
                     echo '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="authenticateUser(' . $uid . ')">Authenticate user</button>';
-                    echo '<h4>or</h4>';
-                    echo '<button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteeUser(' . $uid . ')">Delete user</button>';
                 }
                 echo '</div>';
             ?>

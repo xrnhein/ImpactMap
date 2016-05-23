@@ -23,5 +23,7 @@
 				$map->remove_project($project);
 			}
 		}
+
+		$map->generate_prefetch();
 	}
 ?>

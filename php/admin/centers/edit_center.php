@@ -21,11 +21,22 @@
             <h4 class="modal-title">Add/Edit Center</h4>
         </div>
         <div class="modal-body">
+            <div id="invalidInputWarning">
+            </div>
             <?php
+                echo '<div class="form-group" id="nameGroup">';
                 echo '<label>Name: </label><input type="text" class="form-control" id="name" name="name" value="' . $center['name'] . '">';
+                echo '</div>';
+                echo '<div class="form-group" id="acronymGroup">';
                 echo '<label>Acronym: </label><input type="text" class="form-control" id="acronym" name="acronym" value="' . $center['acronym'] . '">';
-                echo '<label>Color: </label><input type="color" class="form-control" id="color" name="color" value="' . $center['color'] . '">';
+                echo '</div>';
             ?>
+            <label>Color: </label>
+            <div id="cp" class="input-group colorpicker-component">
+            <span class="input-group-addon"><i></i></span>
+                <input type="text" id="color" <?php echo 'value="' . $center['color'] . '"'?> class="form-control" /> 
+                 
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
