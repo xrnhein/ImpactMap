@@ -1,6 +1,14 @@
 <div class="span7 text-center">
 	<?php
-		$authenticated = false;
+		
+		require_once "../common/class.map.php";
+
+		session_start();
+		
+		$map = new Map();
+		$row = $map -> login_user($_SESSION['user_email']);
+
+		$authenticated = $row['authenticated'];
 
 		if (!$authenticated) {
 			echo "<div class='alert alert-danger'>";
@@ -9,10 +17,13 @@
 			echo "</div>";
 		}
 
-		$name = "Testy McTestface";
-		$email = "mctestface@ucdavis.edu";
-		$phone = "xxx-xxxx";
-		echo "<h2>" . $name . "</h2>";
+		$fname = $row['firstName'];
+		$lname = $row['lastName'];
+		$email = $row['email'];
+		$phone = $row['phone'];
+
+		echo "<h2>" . $fname . " ";
+		echo "" . $lname . "</h2>";
 		echo "<h2><small>" . $email . "</small></h2>";
 		echo "<h2><small>" . $phone . "</small></h2><br>";
 	?>

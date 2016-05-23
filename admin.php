@@ -57,7 +57,7 @@
 					<?php
 						// This is just temporary until we have a database of users
 						//$usertype = "admin";
-						require_once $_SERVER['DOCUMENT_ROOT'] . "/imm/php/common/class.map.php";
+						require_once "php/common/class.map.php";
 
 						session_start();
 		

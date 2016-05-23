@@ -32,8 +32,8 @@ class Map {
   */
   public function insert_user($fname, $lname, $phone, $email, $password) {
     
-    $sql = "INSERT INTO users(email, firstName, lastName, phone, authenticated, password, root, admin) 
-            VALUES (:email, :fname, :lname, :phone, '0', :password, '0', '0')";
+    $sql = "INSERT INTO Users(email, firstName, lastName, phone, authenticated, password, root) 
+            VALUES (:email, :fname, :lname, :phone, '0', :password, '0')";
     try {
         $stmt = $this->_db->prepare($sql);
         $stmt -> bindParam(":fname", $fname, PDO::PARAM_STR);
@@ -55,7 +55,7 @@ class Map {
   */
   public function login_user($email) {
         
-        $sql = "SELECT * FROM users WHERE email=:email LIMIT 1";
+        $sql = "SELECT * FROM Users WHERE email=:email LIMIT 1";
         try {
             $stmt = $this->_db->prepare($sql);
             $stmt -> bindParam(":email", $email, PDO::PARAM_STR);
