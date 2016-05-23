@@ -497,6 +497,9 @@ function editCenter(cid) {
 * @param cid The id of the center to edit
 */
 function submitEditCenter(cid) {
+    if (!validateCenterData())
+        return;
+
     $.ajax({
         type: "POST",
         url: "php/admin/centers/submit_center_edit.php",
@@ -604,6 +607,9 @@ function editContact(conid) {
 * @param conid The id of the contact to edit
 */
 function submitEditContact(conid) {
+    if (!validateContactData())
+        return;
+
     console.log('test');
     $.ajax({
         type: "POST",
@@ -720,6 +726,9 @@ function editUser(uid) {
 * @param uid The id of the user to edit, -1 if adding a user
 */
 function submitEditUser(uid) {
+    if (!validateUserData())
+        return;
+
     $.ajax({
         type: "POST",
         url: "php/admin/users/submit_user_edit.php",

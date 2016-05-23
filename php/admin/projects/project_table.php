@@ -1,46 +1,3 @@
-<<<<<<< HEAD
-<?php
-	require_once "../../common/dbConnect.php";
-	require_once "../../common/class.map.php";
-?>
-<div class="row">
-	<div class="panel panel-default">
-		<table class="table table-hover table-fixed">
-			<thead>
-				<tr>
-					<th class="col-xs-1">
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="#" onclick="selectAll()">Select all</a></li>
-								<li><a href="#" onclick="unselectAll()">Unselect all</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#" onclick="updateProjects('hide')">Hide</a></li>
-								<li><a href="#" onclick="updateProjects('show')">Show</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#" onclick="updateProjects('delete')">Delete</a></li>
-							</ul>
-						</div>
-					</th>
-					<th class="col-xs-1">Visible</th>
-					<th class="col-xs-3">Title</th>
-					<th class="col-xs-2">Status</th>
-					<th class="col-xs-2">Start date</th>
-					<th class="col-xs-3">Summary</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-					/**
-					* The table of projects. Each checkbox stores the id of the project it's next to for deletion. Clicking on a project calls editProject(pid) where
-					* pid is the id of that project.
-					*/
-
-					//require_once "../../common/dbConnect.php";
-					//require_once "../../common/class.map.php";
-=======
 <div class="panel panel-default table-responsive">
 	<table class="table table-hover table-fixed">
 		<thead>
@@ -75,15 +32,10 @@
 				* The table of projects. Each checkbox stores the id of the project it's next to for deletion. Clicking on a project calls editProject(pid) where
 				* pid is the id of that project.
 				*/
-
 				require_once "../../common/dbConnect.php";
 				require_once "../../common/class.map.php";
->>>>>>> upstream/master
-
 				$map = new Map();
-
 				$projects = $map -> load_projects_full();
-
 				for ($i = 0; $i < count($projects); $i++) {
 					echo "<tr>";
 					echo "<td class='col-xs-1'><input type='checkbox' class='delete' id='" . $projects[$i]['pid'] . "'></td>";
@@ -104,9 +56,4 @@
 </div>
 <div class="span7 text-center">
 	<button type="button" class="btn btn-primary" onclick="editProject(-1)">Add a project</button>
-<<<<<<< HEAD
-	<button type="button" class="btn btn-default">Import .csv</button>
-	<button type="button" class="btn btn-default">Export .csv</button>
-=======
->>>>>>> upstream/master
 </div>

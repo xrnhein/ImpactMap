@@ -1,8 +1,4 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_name("EEC Map");
-    session_start();
-}
 
 // Set the error reporting level
 error_reporting(E_ALL);

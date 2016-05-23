@@ -56,33 +56,15 @@
 					</li>
 					<?php
 						// This is just temporary until we have a database of users
-						//$usertype = "admin";
-						require_once $_SERVER['DOCUMENT_ROOT'] . "/ImpactMap/php/common/class.map.php";
-
-						session_start();
-		
-						$map = new Map();
-						$row = $map -> login_user($_SESSION['user_email']);
-						$usertype = $row['admin'];
-
-						if ($usertype)
+						$usertype = "admin";
+						if ($usertype == "admin")
 							echo '<li id="users"><a href="#" onclick="loadUsers()">Users</a></li>';
 					?>
 					<li id="profile"><a href="#" onclick="loadProfile()">Profile</a></li>
 			    </ul>
 			    <?php
-			    	//$username = "Testy McTestface";
-			    	  //session_start();
-
-					  if(!isset($_SESSION['logged_in']))
-					  {
-					  	header("Location: login.php");
-					  }
-			    	  $fname = $_SESSION["logged_in"];
-			    	  $lname = $_SESSION["logged_in2"];
-
-			    	echo '<p class="navbar-text navbar-right"><a href="logout.php" onclick="return confirm(\'Are you sure you wish to logout?\')" class="navbar-link">Logout</a></p>
-			    		  <p class="navbar-text navbar-right">Signed in as ' . $fname . ' ' . $lname . '</p>';
+			    	$username = "Testy McTestface";
+			    	echo '<p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">' . $username . '</a></p>';
 			    ?>
 			</div>
 		  </div>
