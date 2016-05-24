@@ -846,4 +846,50 @@ class Map {
       }
     }
 
+    /**
+     * Removes project picture link from database (sets to empty string)
+     *
+     * @param int $pid      Project ID
+     * @return bool         TRUE on successful execution
+     */
+    public function delete_picture($pid) {
+        $pid = intval($pid);
+        $sql = "UPDATE Projects SET Pic='' WHERE pid=:pid LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
+            $stmt -> execute();
+            $stmt -> closeCursor();
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    /**
+     * Saves picture link to database
+     *
+     * @param int $pid      Project ID
+     * @param string $url   The picture URL
+     * @return bool         TRUE on successful execution
+     */
+    public function save_picture($pid, $url) {
+        $pid = intval($pid);
+        $sql = "UPDATE Projects SET Pic=:url WHERE pid=:pid LIMIT 1";
+        try {
+            $stmt = $this->_db->prepare($sql);
+            $stmt -> bindParam(":url", $url, PDO::PARAM_STR);
+            $stmt -> bindParam(":pid", $pid, PDO::PARAM_INT);
+            $stmt -> execute();
+            $stmt -> closeCursor();
+        } catch(PDOException $e) {
+            echo $e -> getMessage();
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+
+
 }
