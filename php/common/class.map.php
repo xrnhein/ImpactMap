@@ -83,7 +83,7 @@ class Map {
       $filters = array_merge($defaults, $filters);
 
       $results = NULL;
-      $sql = "SELECT pid, lat, lng, title FROM Projects WHERE lat >= :minLat AND lat <= :maxLat AND lng >= :minLng AND lng <= :maxLng
+      $sql = "SELECT pid, lat, lng, title FROM Projects WHERE lat >= :minLat AND lat <= :maxLat AND lng >= :minLng AND lng <= :maxLng AND visible = true
               LIMIT :limit";
       try {
           $stmt = $this->_db->prepare($sql);
@@ -173,7 +173,7 @@ class Map {
     *
     */
     public function update_project() {
-        $sql = "UPDATE Projects SET cid = :cid, title = :title, status = :status, startDate = :startDate, endDate = :endDate, buildingName = :buildingName, address = :address, zip = :zip, type = :type, summary = :summary, results = :results
+        $sql = "UPDATE Projects SET cid = :cid, title = :title, status = :status, startDate = :startDate, endDate = :endDate, buildingName = :buildingName, address = :address, zip = :zip, type = :type, summary = :summary, results = :results,
                                     link = :link, pic = :pic, conid = :conid, fundedBy = :fundedBy, keywords = :keywords, stemmedSearchText = :stemmedSearchText, visible = :visible, lat = :lat, lng = :lng WHERE pid = :pid LIMIT 1;
                 INSERT INTO History(pid, cid, title, status, startDate, endDate, buildingName, address, zip, type, summary, results, link, pic, conid, fundedBy, keywords, stemmedSearchText, visible, lat, lng) 
                 VALUES (:pid, :cid, :title, :status, :startDate, :endDate, :buildingName, :address, :zip, :type, :summary, :results, :link, :pic, :conid, :fundedBy, :keywords, :stemmedSearchText, :visible, :lat, :lng)";
@@ -810,7 +810,7 @@ class Map {
     *
     */
     public function generate_prefetch() {
-      $sql = "SELECT title, buildingName, address, zip, name 
+      $sql = "SELECT title, buildingName, address, zip, name
               FROM (SELECT title, buildingName, address, zip, name, visible FROM Projects LEFT JOIN Contacts ON Projects.conid = Contacts.conid) p 
               WHERE p.visible = TRUE";
       try {

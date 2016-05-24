@@ -53,7 +53,10 @@ function initMap(draggable) {
 * Called when the web page is loaded. Currently it initializes the dialog windows.
 */
 $(document).ready( function() {
-    loadProjects();
+    if ($("#projects").hasClass("active"))
+        loadProjects();
+    else
+        loadProfile();
     $('#impactModal').on('hidden.bs.modal', function () {
         marker = null;
         position = null;
