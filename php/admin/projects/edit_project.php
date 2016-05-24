@@ -59,7 +59,7 @@
                     data-fv-regexp-message="Date should be in the form of YYYY-MM-DD">';
                 echo '</div>';
                 echo '</form>';
-                
+
                 echo '<label>End Date: </label><input type="text" class="form-control" id="endDate" name="endDate" value="' . $project['endDate'] . '">';
                 echo '<label>Building Name: </label><input type="text" class="form-control" id="buildingName" name="buildingName" value="' . $project['buildingName'] . '">';
                 echo '<div class="form-group" id="addressGroup">';

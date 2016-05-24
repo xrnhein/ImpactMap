@@ -26,16 +26,16 @@
             </div>
             <?php
                 echo '<div class="form-group" id="firstNameGroup">';
-                echo '<label>First: </label><input type="text" class="form-control" disabled="disabled" id="firstName" name="firstName" value="' . $user['firstName'] . '">';
+                echo '<label>First: </label><input type="text" class="form-control" id="firstName" name="firstName" value="' . $user['firstName'] . '">';
                 echo '</div>';
                 echo '<div class="form-group" id="lastNameGroup">';
-                echo '<label>Last: </label><input type="text" class="form-control" disabled="disabled" id="lastName" name="lastName" value="' . $user['lastName'] . '">';
+                echo '<label>Last: </label><input type="text" class="form-control" id="lastName" name="lastName" value="' . $user['lastName'] . '">';
                 echo '</div>';
                 echo '<div class="form-group" id="emailGroup">';
-                echo '<label>Email: </label><input type="text" class="form-control" disabled="disabled" id="email" name="email" value="' . $user['email'] . '">';
+                echo '<label>Email: </label><input type="text" class="form-control" id="email" name="email" value="' . $user['email'] . '">';
                 echo '</div>';
                 echo '<div class="form-group" id="phoneGroup">';
-                echo '<label>Phone: </label><input type="text" class="form-control" disabled="disabled" id="phone" name="phone" value="' . $user['phone'] . '">';
+                echo '<label>Phone: </label><input type="text" class="form-control" id="phone" name="phone" value="' . $user['phone'] . '">';
                 echo '</div>';
                 echo '<br>';
                 echo '<div class="span7 text-center">';
