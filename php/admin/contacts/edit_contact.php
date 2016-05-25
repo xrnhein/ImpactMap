@@ -38,7 +38,7 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <?php
-                echo '<button type="button" class="btn btn-primary" onclick="submitEditContact(' . $conid . ')" data-dismiss="modal">Save changes</button>';
+                echo '<button type="button" class="btn btn-primary" onclick="submitEditContact(' . $conid . ')">Save changes</button>';
             ?>
         </div>
     </div><!-- /.modal-content -->

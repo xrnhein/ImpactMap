@@ -52,7 +52,10 @@ function initMap(draggable) {
 * Called when the web page is loaded. Currently it initializes the dialog windows.
 */
 $(document).ready( function() {
-    loadProjects();
+    if ($("#projects").hasClass("active"))
+        loadProjects();
+    else
+        loadProfile();
     $('#impactModal').on('hidden.bs.modal', function () {
         marker = null;
         position = null;
@@ -211,10 +214,10 @@ function validateProjectData(){
     $("#addressGroup").removeClass("has-error");
     $("#zipGroup").removeClass("has-error");
     $("#summaryGroup").removeClass("has-error");
-    $("#resultsGroup").removeClass("has-error");
+    //$("#resultsGroup").removeClass("has-error");
     $("#fundedByGroup").removeClass("has-error");
 
-    var dateRegex = /^(20[0-9]{2})-([1-9]{1}|1[1-2]{1})-([1-9]{1}|[1-3]{1}[1-9]{1})$/;
+    var dateRegex = /^(20[0-9]{2})-(0[1-9]{1}|[1-9]{1}|1[1-2]{1})-([1-9]{1}|[1-3]{1}[1-9]{1})$/;
 
     if ($("#title").val().length < 1) 
     {
@@ -252,13 +255,6 @@ function validateProjectData(){
         $("#summaryGroup").addClass("has-error");
         validInput = false;
         string = string.concat("<li><b>Summary</b> cannot be empty</li>");
-    }
-
-    if($("#results").val().length < 1)
-    {
-        $("#resultsGroup").addClass("has-error");
-        validInput = false;
-        string = string.concat("<li><b>results</b> cannot be empty</li>");
     }
 
     if($("#fundedBy").val().length < 1)
@@ -325,7 +321,6 @@ function submitEditProject(pid) {
                zip: $("#zip").val(),
                type: $("#type").val(),
                summary: $("#summary").val(),
-               results: $("#results").val(),
                link: $("#link").val(),
                pic: $("#pic").val(),
                conid: $("#conid").val(),

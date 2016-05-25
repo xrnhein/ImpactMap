@@ -35,7 +35,7 @@
 				//require_once "../../common/constants.inc.php";
 				require_once "../../common/dbConnect.php";
 				require_once "../../common/class.map.php";
-				$STATUS = array("Planned", "Ongoing", "Completed");
+				//$STATUS = arzray("Planned", "Ongoing", "Completed");
 				$map = new Map();
 				$projects = $map -> load_projects_full();
 				for ($i = 0; $i < count($projects); $i++) {
@@ -51,8 +51,9 @@
 					echo "<td class='clickable col-xs-2 text-nowrap' onclick=editProject(" . $projects[$i]['pid'] . ")> " . $projects[$i]['title'] . " </td>";
 
 					echo "<td class='clickable col-xs-1 text-nowrap' onclick=editProject(" . $projects[$i]['pid'] . ")> " . $projects[$i]['acronym'] . " </td>";
-					//$j = $projects[$i]['status'];
-					echo "<td align='left' class='clickable col-xs-1 text-nowrap' onclick=editProject(" . $projects[$i]['status'] . ")> " . $projects[$i]['status'] . " </td>";
+					//$k = 1;
+					//$j = $STATUS[$k];
+					echo "<td align='left' class='clickable col-xs-1 text-nowrap' onclick=editProject(" . $STATUS[intval($projects[$i]['status'])-1] . ")> " . $STATUS[intval($projects[$i]['status'])-1] . " </td>";
 
 					echo "<td class='clickable col-xs-1 text-nowrap' onclick=editProject(" . $projects[$i]['pid'] . ")> " . $projects[$i]['startDate'] . " </td>";
 
